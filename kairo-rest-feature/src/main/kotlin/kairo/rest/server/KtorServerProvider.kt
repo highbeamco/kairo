@@ -33,6 +33,7 @@ internal class KtorServerProvider @Inject constructor(
       configure = configureEmbeddedServer(config),
       module = {
         useCallStartTime()
+        installCallId()
         installContentNegotiation()
         installStatusPages(exceptionManager)
         with(module) {
