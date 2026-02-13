@@ -12,7 +12,7 @@ Extends `bom` with version alignment for all external dependencies used by Kairo
 - Kotest, MockK, kotlinx-datetime, Moneta
 
 ## Patterns and conventions
-- Consumers use `implementation(platform("software.airborne.kairo:bom-full:VERSION"))` to align both Kairo and external versions
+- Consumers use `implementation(platform("com.highbeam.kairo:bom-full:VERSION"))` to align both Kairo and external versions
 - When updating an external dependency, update its version here
 
 ## Related modules

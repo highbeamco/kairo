@@ -52,6 +52,12 @@ List(10) { barrier.await() }
 Kotlin's `emitAll()` method only accepts another `Flow`.
 Kairo's version accepts any `Iterable`.
 
+```kotlin
+flow {
+  emitAll(listOf(1, 2, 3))
+}
+```
+
 ### `singleNullOrThrow()`
 
 Kotlin's `single()` and `singleOrNull()` functions are excellent utilities,

@@ -1,12 +1,12 @@
 # kairo-application
 
-Entry point for running a Kairo application. The `kairo {}` DSL creates a Server, starts it, waits for JVM termination (via shutdown hook), and cleans up.
+Entrypoint for running a Kairo application. The `kairo {}` DSL creates a Server, starts it, waits for JVM termination (via shutdown hook), and cleans up.
 
 ## Key files
-- `src/main/kotlin/kairo/application/Kairo.kt` -- `kairo {}` DSL entry point
+- `src/main/kotlin/kairo/application/Kairo.kt` -- `kairo {}` DSL entrypoint
 
 ## Patterns and conventions
-- `kairo {}` is the top-level entry point; call it from `main()`
+- `kairo {}` is the top-level entrypoint; call it from `main()`
 - Inside the block, configure your Server with Features and config
 - The function blocks until JVM shutdown (SIGTERM, SIGINT)
 - Shutdown hooks handle graceful cleanup

@@ -8,6 +8,7 @@ package kairo.optional
 public sealed class Required<out T : Any> : OptionalBase<T>() {
   abstract override fun getOrThrow(): T
 
+  /** The value was absent from the JSON. Treat as "do not modify". */
   public data object Missing : Required<Nothing>() {
     override val isSpecified: Boolean = false
 
@@ -16,6 +17,7 @@ public sealed class Required<out T : Any> : OptionalBase<T>() {
     }
   }
 
+  /** The value was present and non-null in the JSON. */
   public data class Value<T : Any>(val value: T) : Required<T>() {
     override val isSpecified: Boolean = true
 
@@ -24,6 +26,7 @@ public sealed class Required<out T : Any> : OptionalBase<T>() {
   }
 
   public companion object {
+    /** Wraps a non-null value in [Value]. */
     public fun <T : Any> of(value: T): Required<T> =
       Value(value)
   }

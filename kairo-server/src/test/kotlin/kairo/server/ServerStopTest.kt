@@ -41,9 +41,7 @@ internal class ServerStopTest {
   fun `Feature stop exception (first one fails)`(): Unit =
     runTest {
       val events = MutableStateFlow(emptyList<String>())
-      /**
-       * The signal is used to ensure that "Test(0)" stops before "Test(1)".
-       */
+      /** The signal is used to ensure that "Test(0)" stops before "Test(1)". */
       val signal = CompletableDeferred<Unit>()
       val features = listOf(
         object : Feature() {
@@ -109,9 +107,7 @@ internal class ServerStopTest {
   fun `Feature stop exception (last one fails)`(): Unit =
     runTest {
       val events = MutableStateFlow(emptyList<String>())
-      /**
-       * The signal is used to ensure that "Test(0)" stops before "Test(1)".
-       */
+      /** The signal is used to ensure that "Test(0)" stops before "Test(1)". */
       val signal = CompletableDeferred<Unit>()
       val features = listOf(
         object : Feature() {

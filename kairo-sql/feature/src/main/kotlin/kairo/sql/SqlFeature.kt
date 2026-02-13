@@ -22,9 +22,7 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabaseConfig
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-/**
- * The SQL Feature uses Exposed to provide access to a SQL database.
- */
+/** The SQL Feature uses Exposed to provide access to a SQL database. */
 public class SqlFeature(
   config: SqlFeatureConfig,
   configureConnectionFactory: ConnectionFactoryOptions.Builder.() -> Unit = {},

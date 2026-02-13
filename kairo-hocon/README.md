@@ -21,6 +21,10 @@ dependencies {
 
 ## Usage
 
+The `KairoJson.deserialize(hocon)` extension converts an HOCON `Config` object
+to a typed data class.
+Internally, the HOCON tree is rendered as JSON and then deserialized by Jackson.
+
 ```kotlin
 data class Config(
   val rest: RestFeatureConfig,
@@ -33,3 +37,7 @@ val hocon = ConfigFactory.parseResources("config/$configName.conf").resolve()
 
 json.deserialize<Config>(hocon)
 ```
+
+You generally won't use this module directly.
+[kairo-config](../kairo-config/README.md) uses it under the hood
+to load and deserialize HOCON config files.

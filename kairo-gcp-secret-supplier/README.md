@@ -26,14 +26,18 @@ dependencies {
 ## Usage
 
 Use `DefaultGcpSecretSupplier` in production.
+It uses [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc)
+to authenticate with Google Cloud.
 
 ```kotlin
 val gcpSecretSupplier: GcpSecretSupplier = DefaultGcpSecretSupplier()
 val value = gcpSecretSupplier["projects/012345678900/secrets/example/versions/1"]
 ```
 
-The result is either the value of the GCP secret,
-or `null` if the GCP secret does not exist.
+The result is a `ProtectedString` containing the secret value,
+or `null` if the secret does not exist.
+The secret ID must be a fully-qualified resource name
+including the project, secret name, and version.
 
 ## Testing
 

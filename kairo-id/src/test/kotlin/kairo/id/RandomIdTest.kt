@@ -13,9 +13,7 @@ internal class RandomIdTest {
       userId.toString().shouldMatch(Regex("UserId[(]value=user_[a-zA-Z0-9]{15}[)]"))
     }
 
-  /**
-   * There's no great way to test randomness, so we just ensure there are no duplicates over 100,000 generations.
-   */
+  /** There's no great way to test randomness, so we just ensure there are no duplicates over 100,000 generations. */
   @Test
   fun randomness(): Unit =
     runTest {

@@ -11,7 +11,7 @@ import kotlin.reflect.typeOf
  * Unifies [Class], [KClass], [Type], and [KType] into a safer and richer wrapper.
  * Preserves full generic fidelity at runtime.
  *
- * Used internally by kairo-ktor and kairo-serialization
+ * Used by kairo-ktor, kairo-serialization, and application code
  * to preserve type information that JVM type erasure would otherwise lose.
  */
 public data class KairoType<T>(
@@ -31,6 +31,7 @@ public data class KairoType<T>(
     /**
      * Infers a [KairoType] at runtime from within a generic abstract class.
      *
+     * @param T the type being resolved.
      * @param baseClass the generic parent class (e.g. `Repository::class`).
      * @param i the type argument index (0-based).
      * @param thisClass the concrete subclass whose type arguments are being resolved.

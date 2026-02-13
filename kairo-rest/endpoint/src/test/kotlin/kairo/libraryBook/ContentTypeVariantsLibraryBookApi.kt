@@ -24,9 +24,7 @@ internal object ContentTypeVariantsLibraryBookApi {
     override val body: LibraryBookRep.Creator,
   ) : RestEndpoint<LibraryBookRep.Creator, LibraryBookRep>()
 
-  /**
-   * This is actually valid; an empty string means "Any" content type.
-   */
+  /** This is actually valid; an empty string means "Any" content type. */
   @Rest("POST", "/library-books")
   @Rest.ContentType("")
   @Rest.Accept("application/json")
@@ -34,9 +32,7 @@ internal object ContentTypeVariantsLibraryBookApi {
     override val body: LibraryBookRep.Creator,
   ) : RestEndpoint<LibraryBookRep.Creator, LibraryBookRep>()
 
-  /**
-   * Means "Any" content type.
-   */
+  /** Means "Any" content type. */
   @Rest("POST", "/library-books")
   @Rest.ContentType("*/*")
   @Rest.Accept("application/json")

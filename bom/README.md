@@ -14,11 +14,11 @@ If you're building a full Kairo application, consider using
 // build.gradle.kts
 
 dependencies {
-  implementation(platform("software.airborne.kairo:bom:6.0.0"))
+  implementation(platform("com.highbeam.kairo:bom:6.0.0"))
 
   // Now you can omit the version for any Kairo library.
-  implementation("software.airborne.kairo:kairo-id")
-  implementation("software.airborne.kairo:kairo-money")
+  implementation("com.highbeam.kairo:kairo-id")
+  implementation("com.highbeam.kairo:kairo-money")
 }
 ```
 

@@ -3,7 +3,7 @@
 Jackson wrapper (`KairoJson`) with strict, opinionated defaults. Enforces Kotlin nullability, fails on unknown properties by default, and preserves full generic type information via kairo-reflect.
 
 ## Key files
-- `src/main/kotlin/kairo/serialization/KairoJson.kt` -- main entry point; `KairoJson { }` builder, `serialize()`, `deserialize()`, and the exhaustive `kairo()` builder configuring all Jackson features
+- `src/main/kotlin/kairo/serialization/KairoJson.kt` -- main entrypoint; `KairoJson { }` builder, `serialize()`, `deserialize()`, and the exhaustive `kairo()` builder configuring all Jackson features
 - `src/main/kotlin/kairo/serialization/BigDecimalConfig.kt` -- `BigDecimalFormat` enum (Double vs String)
 - `src/main/kotlin/kairo/serialization/BigIntegerConfig.kt` -- `BigIntegerFormat` enum (Long vs String)
 

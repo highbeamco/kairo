@@ -17,16 +17,12 @@ internal class EnumSerializationTest {
     Science,
     ScienceFiction,
 
-    /**
-     * [JsonEnumDefaultValue] is used to ensure that Jackson does NOT use it for deserialization.
-     */
+    /** [JsonEnumDefaultValue] is used to ensure that Jackson does NOT use it for deserialization. */
     @JsonEnumDefaultValue
     Default,
     ;
 
-    /**
-     * [toString] is implemented to ensure that Jackson does NOT use it for serialization.
-     */
+    /** [toString] is implemented to ensure that Jackson does NOT use it for serialization. */
     override fun toString(): String =
       name.filter { it.isUpperCase() }
   }

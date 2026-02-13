@@ -14,11 +14,11 @@ the [standard BOM](../bom/README.md) may be sufficient.
 // build.gradle.kts
 
 dependencies {
-  implementation(platform("software.airborne.kairo:bom-full:6.0.0"))
+  implementation(platform("com.highbeam.kairo:bom-full:6.0.0"))
 
   // Now you can omit the version for Kairo libraries and aligned external libraries.
-  implementation("software.airborne.kairo:kairo-rest-feature")
-  implementation("software.airborne.kairo:kairo-sql-feature")
+  implementation("com.highbeam.kairo:kairo-rest-feature")
+  implementation("com.highbeam.kairo:kairo-sql-feature")
 }
 ```
 

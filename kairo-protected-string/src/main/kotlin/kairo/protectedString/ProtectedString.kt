@@ -16,9 +16,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 public class ProtectedString @Access @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(
   @Access @JsonValue public val value: String,
 ) {
-  /**
-   * You must opt in to create protected strings or access their values.
-   */
+  /** You must opt in to create protected strings or access their values. */
   @RequiresOptIn
   @Target(AnnotationTarget.CONSTRUCTOR, AnnotationTarget.PROPERTY)
   public annotation class Access
@@ -32,9 +30,7 @@ public class ProtectedString @Access @JsonCreator(mode = JsonCreator.Mode.DELEGA
   override fun hashCode(): Int =
     value.hashCode()
 
-  /**
-   * Safe by default: [toString] redacts the value.
-   */
+  /** Safe by default: [toString] redacts the value. */
   override fun toString(): String =
     "ProtectedString(value='REDACTED')"
 }

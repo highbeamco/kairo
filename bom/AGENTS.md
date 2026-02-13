@@ -6,7 +6,7 @@ Aligns versions of all Kairo modules so consumers only need to declare the BOM o
 - `build.gradle.kts` -- auto-generates constraints for all publishable subprojects
 
 ## Patterns and conventions
-- Consumers add `implementation(platform("software.airborne.kairo:bom:VERSION"))` to align Kairo module versions
+- Consumers add `implementation(platform("com.highbeam.kairo:bom:VERSION"))` to align Kairo module versions
 - The BOM iterates over all subprojects with `maven-publish` plugin and adds `api` constraints for each
 
 ## Related modules

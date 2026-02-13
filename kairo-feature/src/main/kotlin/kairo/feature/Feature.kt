@@ -13,6 +13,7 @@ public abstract class Feature {
    */
   public abstract val name: String
 
+  /** Defines start and stop handlers for this Feature. Override using the [lifecycle] DSL. */
   public open val lifecycle: List<LifecycleHandler> = emptyList()
 
   override fun toString(): String =

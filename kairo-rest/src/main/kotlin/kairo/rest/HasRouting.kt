@@ -3,7 +3,8 @@ package kairo.rest
 import io.ktor.server.application.Application
 
 /**
- * Use this interface on any Features that wish to add Ktor routes.
+ * Implement this interface on Features that define REST endpoints.
+ * The [routing] function is called during Ktor server setup to register routes.
  */
 public interface HasRouting {
   public fun Application.routing()

@@ -1,7 +1,7 @@
 # Kairo agent guide
 
 Kairo is a production-ready Kotlin backend toolkit.
-This monorepo contains ~33 top-level Gradle modules (standalone and application libraries)
+This monorepo contains standalone and application libraries
 organized under a single Gradle build.
 
 ## Build and test
@@ -36,7 +36,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full picture. Key concepts:
 
 - **Features** are the core building block. Framework Features (REST, SQL, DI) and Domain Features (your app code) compose together.
 - **Servers** are containers of Features with priority-based lifecycle management.
-- The `kairo {}` block in `kairo-application` is the entry point.
+- The `kairo {}` block in `kairo-application` is the entrypoint.
 
 ## Style guide
 

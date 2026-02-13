@@ -7,7 +7,7 @@ The core building block of Kairo applications. Features encapsulate a domain or 
 - `src/main/kotlin/kairo/feature/FeaturePriority.kt` -- priority constants for lifecycle ordering
 - `src/main/kotlin/kairo/feature/LifecycleHandler.kt` -- start/stop handlers with priority
 - `src/main/kotlin/kairo/feature/LifecycleBuilder.kt` -- DSL for defining lifecycle handlers
-- `src/main/kotlin/kairo/feature/Lifecycle.kt` -- `lifecycle {}` DSL entry point
+- `src/main/kotlin/kairo/feature/Lifecycle.kt` -- `lifecycle {}` DSL entrypoint
 
 ## Patterns and conventions
 - Two types: Framework Features (infrastructure like REST, DI, SQL) and Domain Features (business logic like User, Order)

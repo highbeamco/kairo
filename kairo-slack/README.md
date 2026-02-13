@@ -44,6 +44,8 @@ slack {
 Now send a Slack message!
 
 ```kotlin
+val slack: SlackClient // Inject this.
+
 slack.chatPostMessage { builder ->
   builder.channel(slack.channels.getValue("general"))
   builder.blocks {
@@ -53,3 +55,16 @@ slack.chatPostMessage { builder ->
   }
 }
 ```
+
+### Channel mapping
+
+The `channels` config maps logical names to Slack channel IDs.
+Use `slack.channels.getValue("name")` to look up a channel ID at runtime.
+This lets you route messages to different channels per environment (for example production versus staging).
+
+### Available methods
+
+`SlackClient` delegates to Slack's `AsyncMethodsClient`,
+so all Slack API methods are available directly:
+`chatPostMessage`, `chatUpdate`, `chatDelete`,
+`reactionsAdd`, `filesUploadV2`, and more.

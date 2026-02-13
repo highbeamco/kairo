@@ -12,7 +12,7 @@ This guide walks you through using Kairo in your project.
 ## Repository setup
 
 Kairo is hosted on Google Artifact Registry.
-Add the Google Artifact Registry plugin and connect to the Airborne Software repository.
+Add the Google Artifact Registry plugin and connect to the Highbeam repository.
 
 ```kotlin
 // build.gradle.kts
@@ -23,7 +23,7 @@ plugins {
 
 repositories {
   maven {
-    url = uri("artifactregistry://us-central1-maven.pkg.dev/airborne-software/maven")
+    url = uri("artifactregistry://us-central1-maven.pkg.dev/highbeam-kairo/maven")
   }
 }
 ```
@@ -40,9 +40,9 @@ We recommend using [Kairo's BOM](./bom/README.md) to keep versions aligned.
 // build.gradle.kts
 
 dependencies {
-  implementation(platform("software.airborne.kairo:bom:6.0.0"))
-  implementation("software.airborne.kairo:kairo-id")
-  implementation("software.airborne.kairo:kairo-money")
+  implementation(platform("com.highbeam.kairo:bom:6.0.0"))
+  implementation("com.highbeam.kairo:kairo-id")
+  implementation("com.highbeam.kairo:kairo-money")
 }
 ```
 
@@ -72,22 +72,22 @@ plugins {
 
 repositories {
   maven {
-    url = uri("artifactregistry://us-central1-maven.pkg.dev/airborne-software/maven")
+    url = uri("artifactregistry://us-central1-maven.pkg.dev/highbeam-kairo/maven")
   }
 }
 
 dependencies {
-  implementation(platform("software.airborne.kairo:bom-full:6.0.0"))
+  implementation(platform("com.highbeam.kairo:bom-full:6.0.0"))
 
   // Core.
-  implementation("software.airborne.kairo:kairo-application")
-  implementation("software.airborne.kairo:kairo-config")
+  implementation("com.highbeam.kairo:kairo-application")
+  implementation("com.highbeam.kairo:kairo-config")
 
   // Framework Features.
-  implementation("software.airborne.kairo:kairo-dependency-injection-feature")
-  implementation("software.airborne.kairo:kairo-health-check-feature")
-  implementation("software.airborne.kairo:kairo-rest-feature")
-  implementation("software.airborne.kairo:kairo-sql-feature")
+  implementation("com.highbeam.kairo:kairo-dependency-injection-feature")
+  implementation("com.highbeam.kairo:kairo-health-check-feature")
+  implementation("com.highbeam.kairo:kairo-rest-feature")
+  implementation("com.highbeam.kairo:kairo-sql-feature")
   ksp("io.insert-koin:koin-ksp-compiler")
 
   // Database driver.

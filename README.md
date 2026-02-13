@@ -19,7 +19,7 @@ _This section assumes you're using Gradle._
 
 Kairo is hosted on Google Artifact Registry,
 so you'll first need to add the Google Artifact Registry plugin
-and connect to Airborne Software repository.
+and connect to the Highbeam repository.
 
 ```kotlin
 // build.gradle.kts

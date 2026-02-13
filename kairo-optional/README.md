@@ -41,7 +41,7 @@ dependencies {
 
 There are two important points to note when using `Optional<T>`.
 
-First, you must add the `optionalModule` to your `KairoJson` instance.
+First, you must add `OptionalModule` to your `KairoJson` instance.
 
 ```kotlin
 val json: KairoJson =
@@ -52,10 +52,48 @@ val json: KairoJson =
 
 Second, you must add the `@JsonInclude(JsonInclude.Include.NON_ABSENT)` annotation
 to the class or property.
+Without this, `Optional.Missing` will serialize as `null` instead of being omitted.
 
 ```kotlin
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 data class Update(
   val value: Optional<String> = Optional.Missing,
+)
+```
+
+### Working with Optional values
+
+Use `ifSpecified` to act only when a value is present (not `Missing`).
+
+```kotlin
+update.name.ifSpecified { name ->
+  // name is String? here (null if Optional.Null).
+  entity.name = name
+}
+```
+
+Use `transform` to map the inner value while preserving the `Missing` state.
+
+```kotlin
+val upperName: Optional<String> = update.name.transform { it?.uppercase() }
+```
+
+Use `fromNullable` to convert a nullable value into an `Optional`.
+
+```kotlin
+Optional.fromNullable("hello") // => Optional.Value("hello")
+Optional.fromNullable(null)    // => Optional.Null
+```
+
+### `Required<T>`
+
+`Required<T>` is similar to `Optional<T>` but does not allow `null` values.
+It has two states: `Missing` and `Value`.
+Use `Required<T>` when a field can be omitted but should never be `null`.
+
+```kotlin
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
+data class Update(
+  val name: Required<String> = Required.Missing,
 )
 ```

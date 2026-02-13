@@ -20,9 +20,10 @@ import com.stytch.java.consumer.api.users.Users
 import com.stytch.java.consumer.api.webauthn.WebAuthn
 
 /**
- * This wrapper is necessary for testing to work properly,
- * because [StytchClient] uses [JvmField].
- * https://github.com/stytchauth/stytch-java/issues/138
+ * Wrapper around [StytchClient] that exposes API surfaces as lazy properties.
+ * Necessary because [StytchClient] uses [JvmField], which breaks mocking in tests.
+ *
+ * @see <a href="https://github.com/stytchauth/stytch-java/issues/138">stytch-java#138</a>
  */
 public class Stytch(
   private val stytchClient: StytchClient,

@@ -81,6 +81,7 @@ public data class RestEndpointTemplate(
   }
 }
 
+/** Converts the template path to Ktor's route format (for example "/users/{userId}"). */
 public fun RestEndpointTemplate.toKtorPath(): String =
   path.components.joinToString("/", prefix = "/") { component ->
     when (component) {

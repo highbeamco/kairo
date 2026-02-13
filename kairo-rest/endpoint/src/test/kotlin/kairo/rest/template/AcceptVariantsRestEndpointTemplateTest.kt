@@ -62,9 +62,7 @@ internal class AcceptVariantsRestEndpointTemplateTest {
         )
     }
 
-  /**
-   * This is actually valid; an empty string means "Any" content type.
-   */
+  /** This is actually valid; an empty string means "Any" content type. */
   @Test
   fun empty(): Unit =
     runTest {
@@ -82,9 +80,7 @@ internal class AcceptVariantsRestEndpointTemplateTest {
         )
     }
 
-  /**
-   * Means "Any" content type.
-   */
+  /** Means "Any" content type. */
   @Test
   fun star(): Unit =
     runTest {
