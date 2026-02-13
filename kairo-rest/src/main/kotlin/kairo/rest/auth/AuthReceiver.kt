@@ -20,6 +20,10 @@ import kairo.rest.exception.JwtVerificationFailed
 import kairo.rest.exception.NoJwt
 import kotlinx.coroutines.CancellationException
 
+/**
+ * Provides the authentication context within an auth block.
+ * Use [public] for unauthenticated endpoints or [verify] for JWT-protected endpoints.
+ */
 public class AuthReceiver<E : RestEndpoint<*, *>> internal constructor(
   public val call: RoutingCall,
   public val endpoint: E,
@@ -54,9 +58,15 @@ public class AuthReceiver<E : RestEndpoint<*, *>> internal constructor(
   }
 }
 
+/** Marks the endpoint as publicly accessible, skipping authentication. */
 public fun AuthReceiver<*>.public(): Unit =
   Unit
 
+/**
+ * Verifies the JWT from the request.
+ * Throws [NoJwt] if no token is present, [ExpiredJwt] if expired,
+ * or [JwtVerificationFailed] for other verification failures.
+ */
 public fun AuthReceiver<*>.verify(config: VerifierConfig): JWTPrincipal {
   val credential = call.principal<BearerTokenCredential>() ?: throw NoJwt()
   val verifier = createVerifier(config, credential)

@@ -14,6 +14,10 @@ import kotlin.random.Random
 public interface Id {
   public val value: String
 
+  /**
+   * Base companion for ID types. Provides [random] generation and [regex] validation helpers.
+   * The payload length (5-32 characters) defaults to 15 (~89 bits of entropy).
+   */
   public abstract class Companion<T : Id>(
     private val length: Int = 15,
   ) {
@@ -21,6 +25,7 @@ public interface Id {
       require(length in 5..32) { "Invalid ID length (length=$length). Must be between 5 and 32 (inclusive)." }
     }
 
+    /** Generates a new random ID with a base-62 encoded payload. */
     public fun random(): T {
       val payload = buildString {
         repeat(this@Companion.length) {
@@ -36,8 +41,10 @@ public interface Id {
       return create(payload)
     }
 
+    /** Constructs an ID instance from the given payload string. Implemented by each ID type. */
     protected abstract fun create(payload: String): T
 
+    /** Builds a validation regex matching the given prefix, an underscore, and a base-62 payload of the configured length. */
     protected fun regex(prefix: Regex): Regex =
       Regex("(?<prefix>(?=[a-z][a-z0-9]*(_[a-z][a-z0-9]*)*)$prefix)_(?<payload>[A-Za-z0-9]+)")
   }

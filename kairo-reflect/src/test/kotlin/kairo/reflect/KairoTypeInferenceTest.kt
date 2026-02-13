@@ -5,9 +5,7 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
-/**
- * Tests [KairoType.from].
- */
+/** Tests [KairoType.from]. */
 internal class KairoTypeInferenceTest {
   internal abstract class AbstractExampleClass<T> {
     val type: KairoType<T> = KairoType.from(AbstractExampleClass::class, 0, this::class)

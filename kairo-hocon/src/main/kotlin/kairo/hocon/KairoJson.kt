@@ -6,6 +6,7 @@ import kairo.reflect.KairoType
 import kairo.reflect.kairoType
 import kairo.serialization.KairoJson
 
+/** Deserializes an HOCON [Config] object to the specified type. Renders the config as JSON internally. */
 public inline fun <reified T> KairoJson.deserialize(hocon: Config): T =
   deserialize(hocon, kairoType())
 

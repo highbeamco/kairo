@@ -19,9 +19,14 @@ dependencies {
 
 ## Usage
 
-See [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime).
+This library re-exports [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime) types
+and adds convenience extensions.
 
-- `Instant` (standard library)
-- `LocalDateTime`, `LocalDate`, `YearMonth`, `LocalTime`
-- `TimeZone`
-- `Month` and `DayOfWeek` enums
+### `Instant.epoch`
+
+A shorthand for the Unix epoch (`1970-01-01T00:00:00Z`).
+Useful in tests when you need a stable, deterministic timestamp.
+
+```kotlin
+Instant.epoch // 1970-01-01T00:00:00Z
+```

@@ -43,3 +43,23 @@ val stytch: Stytch // Inject this.
 
 stytch.users.create(...)
 ```
+
+The `Stytch` class exposes lazy properties for each Stytch API surface:
+`users`, `sessions`, `passwords`, `magicLinks`, `oauth`, `otps`, `totps`,
+`m2m`, `rbac`, and more.
+Each property is only initialized when first accessed.
+
+### Handling results
+
+Stytch SDK methods return `StytchResult<T>`.
+Use the `get()` extension to unwrap the result,
+returning the value on success or throwing on error.
+
+```kotlin
+val response = stytch.users.create(CreateRequest(...)).get()
+```
+
+Errors throw `StytchException`, which has two variants:
+
+- `StytchException.Response`: The API returned an error response.
+- `StytchException.Critical`: A network or serialization failure occurred.

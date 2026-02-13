@@ -7,12 +7,20 @@ import kairo.util.firstCauseOf
 import kotlin.jvm.optionals.getOrNull
 import org.jetbrains.exposed.v1.r2dbc.ExposedR2dbcException
 
+/**
+ * Maps database exceptions (like constraint violations) to domain-specific logical failures.
+ * Use with [withExceptionMappers] to catch and transform R2DBC exceptions.
+ */
 @Suppress("UseDataClass")
 public class ExceptionMapper(
   public val condition: (details: ErrorDetails) -> Boolean,
   public val mapper: () -> LogicalFailure,
 )
 
+/**
+ * Wraps a database operation, catching [ExposedR2dbcException] and transforming it
+ * using the provided mappers. The first mapper whose condition matches wins.
+ */
 public inline fun <T> withExceptionMappers(
   vararg mappers: ExceptionMapper,
   block: () -> T,
@@ -29,6 +37,7 @@ public inline fun <T> withExceptionMappers(
   }
 }
 
+/** Creates a mapper matching PostgreSQL foreign key violations (error code 23503). */
 public fun foreignKeyViolation(
   constraintName: String,
   block: () -> LogicalFailure,
@@ -41,6 +50,7 @@ public fun foreignKeyViolation(
     mapper = block,
   )
 
+/** Creates a mapper matching PostgreSQL unique constraint violations (error code 23505). */
 public fun uniqueViolation(
   constraintName: String,
   block: () -> LogicalFailure,

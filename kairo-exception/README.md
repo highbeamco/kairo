@@ -48,6 +48,8 @@ dependencies {
 ## Usage
 
 Extend `LogicalFailure` to create your own logical failures.
+Every subclass must override `type` (a machine-readable discriminator)
+and `status` (the HTTP status code).
 
 ```kotlin
 data class UserNotFound(
@@ -56,7 +58,7 @@ data class UserNotFound(
   override val type: String = "UserNotFound"
   override val status: HttpStatusCode = HttpStatusCode.NotFound
 
-  override fun Map<String, Any?>.buildJson() {
+  override fun MutableMap<String, Any?>.buildJson() {
     put("userId", userId)
   }
 }
@@ -68,6 +70,26 @@ data class UserNotFound(
 //      "detail": null,
 //      "userId": "..."
 //    }
+```
+
+### Adding custom fields
+
+Override `buildJson()` to include domain-specific data in the JSON response.
+The base fields (`type`, `status`, `message`, `detail`) are always included automatically.
+
+### Detail
+
+Use the `detail` property for additional human-readable context
+that varies per occurrence of the failure.
+
+```kotlin
+class InsufficientBalance(
+  val accountId: AccountId,
+  override val detail: String,
+) : LogicalFailure("Insufficient balance") {
+  override val type: String = "InsufficientBalance"
+  override val status: HttpStatusCode = HttpStatusCode.UnprocessableEntity
+}
 ```
 
 ### Testing

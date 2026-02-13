@@ -54,3 +54,14 @@ val email = Email().apply {
 }
 mailer.use { emails().send(email) }
 ```
+
+### Template mapping
+
+The `templates` config maps logical names to MailerSend template IDs.
+Use `mailer.templates.getValue("name")` to look up a template ID at runtime.
+This lets you swap template IDs across environments without changing code.
+
+### The `use` function
+
+`mailer.use { ... }` provides the underlying `MailerSend` SDK client as the receiver.
+This is a suspending function that dispatches the SDK call off the calling coroutine.

@@ -19,9 +19,7 @@ import kotlin.reflect.KClass
 
 private val error: RestEndpointErrorBuilder = RestEndpointErrorBuilder
 
-/**
- * REST endpoint handlers are invoked for each call to the matching endpoint.
- */
+/** REST endpoint handlers are invoked for each call to the matching endpoint. */
 public class RestEndpointHandler<O : Any, E : RestEndpoint<*, O>> internal constructor(
   private val kClass: KClass<E>,
 ) {
@@ -30,25 +28,19 @@ public class RestEndpointHandler<O : Any, E : RestEndpoint<*, O>> internal const
   internal var handle: (suspend HandleReceiver<E>.() -> O)? = null
   internal var statusCode: (suspend StatusCodeReceiver<O>.() -> HttpStatusCode?)? = null
 
-  /**
-   * Specifies auth for the endpoint.
-   */
+  /** Specifies auth for the endpoint. */
   public fun auth(auth: suspend AuthReceiver<E>.() -> Unit) {
     require(this.auth.isEmpty()) { "${error.endpoint(kClass)}: Auth already defined." }
     this.auth += auth
   }
 
-  /**
-   * Specifies overriding auth for the endpoint.
-   */
+  /** Specifies overriding auth for the endpoint. */
   public fun authOverriddenBy(auth: suspend AuthReceiver<E>.() -> Unit) {
     require(this.auth.isNotEmpty()) { "${error.endpoint(kClass)}: Auth not defined." }
     this.auth += auth
   }
 
-  /**
-   * Specifies the handler for the endpoint.
-   */
+  /** Specifies the handler for the endpoint. */
   public fun handle(handle: suspend HandleReceiver<E>.() -> O) {
     require(this.handle == null) { "${error.endpoint(kClass)}: Handler already defined." }
     this.handle = handle

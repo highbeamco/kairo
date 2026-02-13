@@ -10,9 +10,7 @@ import kairo.rest.auth.AuthConfig
 import kairo.serialization.KairoJson
 import kotlinx.coroutines.CompletableDeferred
 
-/**
- * The REST Feature runs a Ktor server for the lifecycle of a Kairo application.
- */
+/** The REST Feature runs a Ktor server for the lifecycle of a Kairo application. */
 @Suppress("LongParameterList")
 public class RestFeature(
   config: RestFeatureConfig,

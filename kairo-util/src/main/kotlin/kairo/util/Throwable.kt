@@ -1,8 +1,6 @@
 package kairo.util
 
-/**
- * Returns the first recursive cause of the specified type, or null if there is no matching cause.
- */
+/** Walks the exception cause chain and returns the first cause matching type [T], or null if none match. */
 public inline fun <reified T> Throwable.firstCauseOf(): T? =
   generateSequence(this) { it.cause }
     .filterIsInstance<T>()

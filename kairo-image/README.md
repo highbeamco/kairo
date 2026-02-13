@@ -1,10 +1,6 @@
 # Kairo Image
 
-Some utilities for working with images.
-
-```kotlin
-val jpeg = convertImage(png, "jpeg")
-```
+Convenience wrapper around Java's built-in `ImageIO` for format conversion.
 
 ## Installation
 
@@ -22,8 +18,12 @@ dependencies {
 
 ### `convertImage()`
 
-Converts an image to the specified format.
+Converts an image from one format to another using Java's `ImageIO`.
+Takes a `ByteArray` (the source image) and a format name, returns the converted `ByteArray`.
 
 ```kotlin
-val jpeg = convertImage(png, "jpeg")
+val jpeg: ByteArray = convertImage(png, "jpeg")
 ```
+
+Supported format names depend on your JVM's `ImageIO` providers.
+Common formats include `"jpeg"`, `"png"`, `"gif"`, and `"bmp"`.

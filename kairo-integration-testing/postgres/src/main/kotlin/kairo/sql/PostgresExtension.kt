@@ -11,9 +11,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer
 
 @Suppress("SqlSourceToSinkFlow")
 public class PostgresExtension : PostgresExtensionAware, BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
-  /**
-   * Idempotently starts a Postgres Docker container.
-   */
+  /** Idempotently starts a Postgres Docker container. */
   @Suppress("MissingUseCall")
   override fun beforeAll(context: ExtensionContext) {
     context.root.getStore(namespace).getOrComputeIfAbsent("postgres") {
@@ -23,9 +21,7 @@ public class PostgresExtension : PostgresExtensionAware, BeforeAllCallback, Befo
     }
   }
 
-  /**
-   * Creates a database for the current test.
-   */
+  /** Creates a database for the current test. */
   @OptIn(ProtectedString.Access::class)
   override fun beforeEach(context: ExtensionContext) {
     val postgres = checkNotNull(context.postgres)
@@ -46,9 +42,7 @@ public class PostgresExtension : PostgresExtensionAware, BeforeAllCallback, Befo
     )
   }
 
-  /**
-   * Drops the database for the current test (if it exists).
-   */
+  /** Drops the database for the current test (if it exists). */
   override fun afterEach(context: ExtensionContext) {
     context.postgres?.connection { connection ->
       connection.createStatement().executeUpdate("drop database if exists \"${checkNotNull(context.databaseName)}\"")

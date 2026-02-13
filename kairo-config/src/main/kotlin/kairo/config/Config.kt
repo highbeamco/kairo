@@ -15,17 +15,16 @@ import kairo.reflect.KairoType
 import kairo.reflect.kairoType
 import kairo.serialization.KairoJson
 
+/** Builds a resource path for a config file (for example "config/production.conf"). */
 public fun configName(configName: String, prefix: String = "config"): String =
   "$prefix/$configName.conf"
 
 /**
- * Call this to load your config file.
+ * Loads and deserializes a HOCON config file from the classpath.
+ * Uses the CONFIG environment variable by default.
+ * Config resolvers (for example for GCP secret resolution) are applied after loading.
  */
 public suspend inline fun <reified T : Any> loadConfig(
-  /**
-   * The name of the config file, in your resources' "config" package.
-   * If unset, defaults to the "CONFIG" environment variable.
-   */
   configName: String = configName(requireNotNull(System.getenv("CONFIG")) { "CONFIG environment variable not set." }),
   resolvers: List<ConfigResolver> = emptyList(),
   json: KairoJson = KairoJson(),

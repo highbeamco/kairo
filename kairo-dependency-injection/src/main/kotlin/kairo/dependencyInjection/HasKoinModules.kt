@@ -2,9 +2,8 @@ package kairo.dependencyInjection
 
 import org.koin.core.module.Module
 
-/**
- * Use this interface on any Features that wish to bind Koin dependencies for injection.
- */
+/** Implement this interface on Features that provide Koin dependency injection modules. */
 public interface HasKoinModules {
+  /** The Koin modules this Feature contributes. Scanned automatically during DI Feature startup. */
   public val koinModules: List<Module>
 }

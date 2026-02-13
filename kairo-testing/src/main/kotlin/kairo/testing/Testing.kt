@@ -4,9 +4,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-/**
- * This is a semantic wrapper, strictly intended for readability on the caller's side.
- */
+/** Semantic wrapper for test setup. Runs before the test action. */
 @OptIn(ExperimentalContracts::class)
 public inline fun <T, R> T.setup(
   @Suppress("UNUSED_PARAMETER")
@@ -19,9 +17,7 @@ public inline fun <T, R> T.setup(
   return block()
 }
 
-/**
- * This is a semantic wrapper, strictly intended for readability on the caller's side.
- */
+/** Semantic wrapper for verifying preconditions before the test action. */
 @OptIn(ExperimentalContracts::class)
 public inline fun <T, R> T.precondition(
   @Suppress("UNUSED_PARAMETER")
@@ -34,9 +30,7 @@ public inline fun <T, R> T.precondition(
   return block()
 }
 
-/**
- * This is a semantic wrapper, strictly intended for readability on the caller's side.
- */
+/** Semantic wrapper for the primary test action and assertions. */
 @OptIn(ExperimentalContracts::class)
 public inline fun <T, R> T.test(
   @Suppress("UNUSED_PARAMETER")
@@ -49,9 +43,7 @@ public inline fun <T, R> T.test(
   return block()
 }
 
-/**
- * This is a semantic wrapper, strictly intended for readability on the caller's side.
- */
+/** Semantic wrapper for verifying side effects after the test action. */
 @OptIn(ExperimentalContracts::class)
 public inline fun <T, R> T.postcondition(
   @Suppress("UNUSED_PARAMETER")

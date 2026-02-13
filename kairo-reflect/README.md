@@ -53,9 +53,20 @@ val kotlinType: KType = type.kotlinType
 ### `KairoType.from()`
 
 Infer a generic type parameter at runtime with **no manual plumbing**.
+This is useful when you need to know a subclass's type argument
+inside a base class.
 
 ```kotlin
 abstract class MyClass<T> {
   val type: KairoType<T> = KairoType.from(MyClass::class, 0, this::class)
 }
 ```
+
+The arguments are:
+
+- `baseClass`: The class that declares the type parameter.
+- `i`: The zero-based index of the type parameter to extract.
+- `thisClass`: The concrete subclass (typically `this::class`).
+
+Kairo uses `KairoType.from()` internally in `RestEndpoint`
+to resolve the input and output types at runtime for serialization.

@@ -7,5 +7,6 @@ import kairo.protectedString.ProtectedString
  * Use [DefaultGcpSecretSupplier] in production.
  */
 public abstract class GcpSecretSupplier {
+  /** Fetches a secret by its fully-qualified resource name. Returns null if the secret does not exist. */
   public abstract suspend operator fun get(id: String): ProtectedString?
 }

@@ -9,7 +9,8 @@ import io.ktor.server.sse.sse
 import kairo.rest.HandleReceiver
 
 /**
- * Adapted from [sse].
+ * Starts a Server-Sent Events stream from within a REST endpoint handler.
+ * Sets the required SSE headers and returns the streaming content.
  */
 public fun HandleReceiver<*>.serverSentEvents(
   handler: suspend ServerSSESession.() -> Unit,

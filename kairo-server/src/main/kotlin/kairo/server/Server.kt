@@ -15,8 +15,10 @@ import kotlinx.coroutines.sync.withLock
 private val logger: KLogger = KotlinLogging.logger {}
 
 /**
- * A Kairo Server combines [Feature]s with arbitrary functionality,
- * running them all together.
+ * A Kairo Server composes [Feature]s and manages their lifecycle.
+ *
+ * @param name A human-readable name for logging and debugging.
+ * @param features The Features to manage. Order does not matter; lifecycle priority determines execution order.
  */
 public class Server(
   private val name: String,

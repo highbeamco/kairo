@@ -1,5 +1,6 @@
 package kairo.feature
 
+/** A lifecycle handler manages Feature startup and shutdown at a specific [priority]. */
 public class LifecycleHandler internal constructor(
   public val priority: Int,
   private val handleStart: (suspend (features: List<Feature>) -> Unit)?,

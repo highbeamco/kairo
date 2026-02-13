@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 /**
- * Adapted from [JacksonConverter], but avoids type erasure.
+ * Ktor [ContentConverter] adapted from [JacksonConverter] that preserves full generic type information.
+ * Unlike Ktor's built-in converter, this uses [KairoType] to avoid JVM type erasure
+ * during serialization and deserialization.
  */
 @Suppress("MissingUseCall")
 @OptIn(KairoJson.RawJsonMapper::class)
@@ -71,6 +73,7 @@ public class KairoConverter(private val json: KairoJson) : ContentConverter {
     JsonConvertException("Illegal json parameter found: ${e.message}", e)
 }
 
+/** Registers [KairoConverter] for content negotiation on a Ktor HTTP client. */
 @Suppress("UnnecessaryFullyQualifiedName")
 public fun io.ktor.client.plugins.contentnegotiation.ContentNegotiationConfig.kairoConversion(
   json: KairoJson = KairoJson(),
@@ -79,6 +82,7 @@ public fun io.ktor.client.plugins.contentnegotiation.ContentNegotiationConfig.ka
   register(contentType, KairoConverter(json))
 }
 
+/** Registers [KairoConverter] for content negotiation on a Ktor HTTP server. */
 @Suppress("UnnecessaryFullyQualifiedName")
 public fun io.ktor.server.plugins.contentnegotiation.ContentNegotiationConfig.kairoConversion(
   json: KairoJson = KairoJson(),

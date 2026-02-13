@@ -91,4 +91,27 @@ Now go ahead and generate some user IDs!
 
 ```kotlin
 UserId.random()
+// => UserId("user_ccU4Rn4DKVjCMqt3d0oAw3")
 ```
+
+### Customizing payload length
+
+The default payload length is 15 characters (~89 bits of entropy).
+Override it in your companion to use a different length.
+
+```kotlin
+companion object : Id.Companion<UserId>(length = 22) {
+  // Now generates 22-character payloads (~131 bits of entropy).
+  // ...
+}
+```
+
+### The `regex` helper
+
+`Id.Companion.regex()` builds a regex that matches the prefix, an underscore,
+and the correct payload length for your ID type.
+Use it in the `init` block to validate incoming IDs.
+
+```kotlin
+val regex: Regex = regex(prefix = Regex("user"))
+// Matches "user_" followed by exactly 15 base-62 characters.

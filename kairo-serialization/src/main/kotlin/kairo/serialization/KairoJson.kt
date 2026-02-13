@@ -63,9 +63,7 @@ public class KairoJson @RawJsonMapper internal constructor(
     }
   }
 
-  /**
-   * You must opt in to access the raw [JsonMapper].
-   */
+  /** You must opt in to access the raw [JsonMapper]. */
   @RequiresOptIn
   @Target(AnnotationTarget.CONSTRUCTOR, AnnotationTarget.PROPERTY)
   public annotation class RawJsonMapper

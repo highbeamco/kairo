@@ -3,7 +3,12 @@ package kairo.util
 import java.text.Normalizer
 
 /**
- * Turns an arbitrary string into exclusively lowercase Latin characters.
+ * Normalizes an arbitrary string to lowercase Latin characters and digits.
+ * Strips diacritics, removes non-alphanumeric characters, and collapses whitespace.
+ *
+ * ```
+ * canonicalize(" Con  | dãnas^t") // => "con danast"
+ * ```
  */
 public fun canonicalize(subject: String): String {
   var result = Normalizer.normalize(subject, Normalizer.Form.NFD)
@@ -17,7 +22,11 @@ public fun canonicalize(subject: String): String {
 }
 
 /**
- * The same canonicalization logic as [canonicalize], but lets you choose the [delimiter].
+ * Like [canonicalize], but joins words with the given [delimiter] instead of spaces.
+ *
+ * ```
+ * slugify(" Con  | dãnas^t", delimiter = "-") // => "con-danast"
+ * ```
  */
 public fun slugify(subject: String, delimiter: String): String =
   canonicalize(subject).replace(" ", delimiter)
