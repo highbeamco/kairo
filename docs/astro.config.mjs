@@ -13,7 +13,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/hudson155/kairo",
+          href: "https://github.com/highbeamco/kairo",
         },
       ],
       sidebar: [
