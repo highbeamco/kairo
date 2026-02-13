@@ -11,7 +11,7 @@ on:
 
 concurrency:
   group: "publish-${{ github.ref }}"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   main:
