@@ -1,0 +1,49 @@
+name: "Terraform CI"
+
+permissions:
+  contents: "read"
+  pull-requests: "write"
+
+on:
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/terraform-ci.yaml"
+      - "terraform/**"
+  workflow_dispatch:
+
+concurrency:
+  group: "terraform-ci-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  main:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out"
+        uses: "actions/checkout@v6" # https://github.com/actions/checkout/releases
+      - name: "GCP auth"
+        uses: "google-github-actions/auth@v3" # https://github.com/google-github-actions/auth/releases
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: "Set up Terraform"
+        uses: "hashicorp/setup-terraform@v3" # https://github.com/hashicorp/setup-terraform
+      - name: "Terraform init"
+        run: |
+          terraform init
+        working-directory: "./terraform"
+      - name: "Terraform validate"
+        run: |
+          terraform validate
+        working-directory: "./terraform"
+      - name: "Terraform plan"
+        run: |
+          terraform plan -out tfplan
+        working-directory: "./terraform"
+      - name: "Post Terraform plan"
+        uses: "borchero/terraform-plan-comment@v2"
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          planfile: "tfplan"
+          working-directory: "./terraform"
