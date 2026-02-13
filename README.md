@@ -182,10 +182,6 @@ These libraries help when **building your full application with Kairo**.
   Interface for [Stytch](https://stytch.com/),
   letting you easily manage identity.
 
-## Code style
-
-[Click here](https://github.com/hudson155/intellij-settings) for Kairo's IntelliJ code style.
-
 ## Style guide
 
 Other than the rules defined here, please follow the
