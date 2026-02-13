@@ -29,11 +29,7 @@ jobs:
           java-version: "21"
           distribution: "corretto"
           cache: "gradle"
-      - name: "Compute version"
-        id: "version"
-        run: |
-          VERSION="$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short HEAD)"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: "Gradle publish"
         run: |
-          ./gradlew publish -Pversion=${{ steps.version.outputs.version }}
+          VERSION="$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short HEAD)"
+          ./gradlew publish -Pversion="$VERSION"
