@@ -20,6 +20,7 @@ public object DarbEncoder {
 
   private val regex: Regex = Regex("[A-Fa-f0-9]*")
 
+  /** Encodes a boolean list into a DARB string. The list can be any length, including empty. */
   public fun encode(booleanList: List<Boolean>): String {
     // Chunk by 4 because each hex represents 4 bits.
     val chunkedBooleanList = booleanList.chunked(chunkSize)
@@ -49,6 +50,7 @@ public object DarbEncoder {
     }.toString()
   }
 
+  /** Decodes a DARB string back into a boolean list. Throws [IllegalArgumentException] if malformed. */
   public fun decode(darb: String): List<Boolean> {
     val (size, hex) = getComponents(darb)
 

@@ -25,3 +25,7 @@ The `Validator.emailAddress` regex follows the
 Validator.emailAddress.matches("jeff@example.com") // true
 Validator.emailAddress.matches("not-an-email") // false
 ```
+
+This is a syntactic check only.
+It does not verify that the email address exists or that the domain has MX records.
+For production use, combine this with server-side verification (such as a confirmation email).

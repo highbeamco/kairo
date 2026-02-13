@@ -33,6 +33,10 @@ public sealed class Optional<out T : Any> : OptionalBase<T>() {
   }
 }
 
+/**
+ * Runs [block] for [Optional.Null] and [Optional.Value], skips [Optional.Missing].
+ * The block receives null for the Null variant.
+ */
 public fun <T : Any> Optional<T>.ifSpecified(block: (T?) -> Unit) {
   when (this) {
     is Optional.Missing -> Unit
@@ -41,6 +45,7 @@ public fun <T : Any> Optional<T>.ifSpecified(block: (T?) -> Unit) {
   }
 }
 
+/** Applies [block] to the inner value, preserving [Optional.Missing] state. */
 public fun <T : Any, R : Any> Optional<T>.transform(block: (T?) -> R?): Optional<R> =
   when (this) {
     is Optional.Missing -> this

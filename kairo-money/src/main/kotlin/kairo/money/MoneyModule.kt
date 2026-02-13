@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import javax.money.CurrencyUnit
 import org.javamoney.moneta.Money
 
+/**
+ * Jackson module that registers serializers/deserializers for [Money] and [CurrencyUnit].
+ * Must be registered on every ObjectMapper that handles monetary values.
+ */
 public class MoneyModule internal constructor(
   moneyFormat: MoneyFormat,
 ) : SimpleModule() {

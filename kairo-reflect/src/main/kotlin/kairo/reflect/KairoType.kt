@@ -8,8 +8,11 @@ import kotlin.reflect.jvm.javaType
 import kotlin.reflect.typeOf
 
 /**
- * Unifies [Class], [KClass], [Type], and [KType] into a safer and richer wrapper
- * Preserves full generic fidelity.
+ * Unifies [Class], [KClass], [Type], and [KType] into a safer and richer wrapper.
+ * Preserves full generic fidelity at runtime.
+ *
+ * Used internally by kairo-ktor and kairo-serialization
+ * to preserve type information that JVM type erasure would otherwise lose.
  */
 public data class KairoType<T>(
   public val kotlinType: KType,
@@ -26,7 +29,11 @@ public data class KairoType<T>(
 
   public companion object {
     /**
-     * Infers a [KairoType] at runtime, from within a generic abstract class.
+     * Infers a [KairoType] at runtime from within a generic abstract class.
+     *
+     * @param baseClass the generic parent class (e.g. `Repository::class`).
+     * @param i the type argument index (0-based).
+     * @param thisClass the concrete subclass whose type arguments are being resolved.
      */
     public fun <T> from(baseClass: KClass<*>, i: Int, thisClass: KClass<*>): KairoType<T> {
       val supertype = thisClass.allSupertypes.single { it.classifier == baseClass }
@@ -36,5 +43,6 @@ public data class KairoType<T>(
   }
 }
 
+/** Captures a [KairoType] using Kotlin's reified generics. */
 public inline fun <reified T> kairoType(): KairoType<T> =
   KairoType(typeOf<T>())

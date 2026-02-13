@@ -12,10 +12,18 @@ import java.math.BigDecimal
 import javax.money.CurrencyUnit
 import org.javamoney.moneta.Money
 
+/**
+ * Controls how [Money] is serialized to and deserialized from JSON.
+ * Extend this class to define a custom wire format for monetary values.
+ */
 public abstract class MoneyFormat {
   public abstract val serializer: JsonSerializer<Money>
   public abstract val deserializer: JsonDeserializer<Money>
 
+  /**
+   * Serializes Money as `{"amount": 123.45, "currency": "USD"}`.
+   * The amount is written as an exact [BigDecimal] to avoid floating-point precision loss.
+   */
   public object Default : MoneyFormat() {
     private data class Delegate(
       val amount: BigDecimal,

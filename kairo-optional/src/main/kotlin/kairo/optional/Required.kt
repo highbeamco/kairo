@@ -1,7 +1,9 @@
 package kairo.optional
 
 /**
- * Corollary to [Optional].
+ * Like [Optional] but without a Null variant.
+ * Use when the value must be non-null if present.
+ * Useful for required fields in JSON Merge Patch.
  */
 public sealed class Required<out T : Any> : OptionalBase<T>() {
   abstract override fun getOrThrow(): T
@@ -27,6 +29,7 @@ public sealed class Required<out T : Any> : OptionalBase<T>() {
   }
 }
 
+/** Runs [block] for [Required.Value], skips [Required.Missing]. */
 public fun <T : Any> Required<T>.ifSpecified(block: (T) -> Unit) {
   when (this) {
     is Required.Missing -> Unit
@@ -34,6 +37,7 @@ public fun <T : Any> Required<T>.ifSpecified(block: (T) -> Unit) {
   }
 }
 
+/** Applies [block] to the inner value, preserving [Required.Missing] state. */
 public fun <T : Any, R : Any> Required<T>.transform(block: (T) -> R): Required<R> =
   when (this) {
     is Required.Missing -> this

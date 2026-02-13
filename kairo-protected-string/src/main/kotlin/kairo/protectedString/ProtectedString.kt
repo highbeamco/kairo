@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonValue
  * Secrets should never show up in logs or stack traces.
  * Protected strings are a lightweight wrapper around sensitive strings
  * that improves safety without complicating your code.
+ *
+ * This is not cryptographic memory protection.
+ * The underlying string remains in JVM heap memory and is not zeroed after use.
  */
 @Suppress("UseDataClass")
 @OptIn(ProtectedString.Access::class)
