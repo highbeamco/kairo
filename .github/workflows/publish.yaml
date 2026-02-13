@@ -1,7 +1,7 @@
 name: "Publish"
 
 permissions:
-  contents: "read"
+  contents: "write"
 
 on:
   push:
@@ -29,7 +29,14 @@ jobs:
           java-version: "21"
           distribution: "corretto"
           cache: "gradle"
+      - name: "Compute version"
+        id: "version"
+        run: |
+          echo "version=$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: "Gradle publish"
         run: |
-          VERSION="$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short HEAD)"
-          ./gradlew publish -Pversion="$VERSION"
+          ./gradlew publish -Pversion="${{ steps.version.outputs.version }}"
+      - name: "Tag"
+        run: |
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
