@@ -6,7 +6,7 @@ resource "google_service_account" "deployment" {
 
 resource "google_project_iam_member" "deployment" {
   for_each = toset([
-    "roles/viewer",
+    "roles/editor",
   ])
   project = var.project
   role = each.value
