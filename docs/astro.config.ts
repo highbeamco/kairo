@@ -1,8 +1,10 @@
-import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import type { AstroUserConfig } from "astro";
+import { defineConfig } from "astro/config";
+
 import moduleSidebar from "./src/generated-sidebar.json";
 
-export default defineConfig({
+const config: AstroUserConfig = defineConfig({
   site: "https://kairo.airborne.software",
   integrations: [
     starlight({
@@ -40,3 +42,5 @@ export default defineConfig({
     }),
   ],
 });
+
+export default config;
