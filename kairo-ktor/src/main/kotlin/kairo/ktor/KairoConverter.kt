@@ -74,7 +74,6 @@ public class KairoConverter(private val json: KairoJson) : ContentConverter {
 }
 
 /** Registers [KairoConverter] for content negotiation on a Ktor HTTP client. */
-@Suppress("UnnecessaryFullyQualifiedName")
 public fun io.ktor.client.plugins.contentnegotiation.ContentNegotiationConfig.kairoConversion(
   json: KairoJson = KairoJson(),
   contentType: ContentType = ContentType.Application.Json,
@@ -83,7 +82,6 @@ public fun io.ktor.client.plugins.contentnegotiation.ContentNegotiationConfig.ka
 }
 
 /** Registers [KairoConverter] for content negotiation on a Ktor HTTP server. */
-@Suppress("UnnecessaryFullyQualifiedName")
 public fun io.ktor.server.plugins.contentnegotiation.ContentNegotiationConfig.kairoConversion(
   json: KairoJson = KairoJson(),
   contentType: ContentType = ContentType.Application.Json,

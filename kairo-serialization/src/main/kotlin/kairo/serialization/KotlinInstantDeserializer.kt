@@ -13,7 +13,6 @@ internal class KotlinInstantDeserializer : StdDeserializer<Instant>(
     p: JsonParser,
     ctxt: DeserializationContext,
   ): Instant {
-    @Suppress("UnnecessaryFullyQualifiedName")
     val javaInstant = ctxt.readValue(p, java.time.Instant::class.java)
     return javaInstant.toKotlinInstant()
   }

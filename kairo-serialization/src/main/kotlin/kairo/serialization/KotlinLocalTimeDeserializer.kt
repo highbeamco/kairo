@@ -13,7 +13,6 @@ internal class KotlinLocalTimeDeserializer : StdDeserializer<LocalTime>(
     p: JsonParser,
     ctxt: DeserializationContext,
   ): LocalTime {
-    @Suppress("UnnecessaryFullyQualifiedName")
     val javaLocalTime = ctxt.readValue(p, java.time.LocalTime::class.java)
     return javaLocalTime.toKotlinLocalTime()
   }
