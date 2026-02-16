@@ -1,27 +1,27 @@
-name: "Docs"
+name: "Docs CI"
 
 permissions:
   contents: "read"
-  pages: "write"
   id-token: "write"
+  pages: "write"
 
 on:
   push:
     branches:
       - "main"
-  pull_request:
     paths:
+      - ".github/workflows/docs-deploy.yaml"
       - "docs/**"
       - "**/README.md"
       - "CHANGELOG.md"
   workflow_dispatch:
 
 concurrency:
-  group: "pages"
+  group: "docs-deploy"
   cancel-in-progress: false
 
 jobs:
-  build:
+  main:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Check out"
@@ -36,7 +36,7 @@ jobs:
           java-version: "21"
           distribution: "corretto"
           cache: "gradle"
-      - name: "Generate Dokka API docs"
+      - name: "Gradle dokka"
         run: |
           ./gradlew dokkaGenerate
       - name: "Set up pnpm"
@@ -44,33 +44,22 @@ jobs:
         with:
           version: "10"
       - name: "Set up Node"
-        uses: "actions/setup-node@v6" # https://github.com/actions/setup-node
+        uses: "actions/setup-node@v6" # https://github.com/actions/setup-node/releases
         with:
-          node-version: "24"
+          node-version-file: "docs/.nvmrc"
           cache: "pnpm"
           cache-dependency-path: "docs/pnpm-lock.yaml"
-      - name: "Install dependencies"
+      - name: "pnpm install"
         run: |
           pnpm install
         working-directory: "./docs"
-      - name: "Build docs"
+      - name: "pnpm build"
         run: |
-          npm run build
+          pnpm build
         working-directory: "./docs"
-      - name: "Upload artifact"
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: "actions/upload-pages-artifact@v3"
+      - name: "GitHub Pages upload"
+        uses: "actions/upload-pages-artifact@v4" # https://github.com/actions/upload-pages-artifact/releases
         with:
-          path: "docs/dist"
-
-  deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: "build"
-    runs-on: "ubuntu-latest"
-    environment:
-      name: "github-pages"
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: "Deploy to GitHub Pages"
-        id: "deployment"
-        uses: "actions/deploy-pages@v4"
+          path: "./docs/dist"
+      - name: "GitHub Pages deploy"
+        uses: "actions/deploy-pages@v4" # https://github.com/actions/deploy-pages/releases

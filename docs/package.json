@@ -1,16 +1,19 @@
 {
   "name": "kairo-docs",
-  "type": "module",
   "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": "24"
+  },
   "scripts": {
-    "copy-readmes": "bash scripts/copy-readmes.sh",
+    "build": "pnpm run copy-readmes && pnpm run copy-dokka && astro build",
     "copy-dokka": "bash scripts/copy-dokka.sh",
-    "dev": "npm run copy-readmes && npm run copy-dokka && astro dev",
-    "build": "npm run copy-readmes && npm run copy-dokka && astro build",
+    "copy-readmes": "bash scripts/copy-readmes.sh",
+    "dev": "pnpm run copy-readmes && pnpm run copy-dokka && astro dev",
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.34",
-    "astro": "^5"
+    "@astrojs/starlight": "0.34.8",
+    "astro": "5.17.1"
   }
 }
