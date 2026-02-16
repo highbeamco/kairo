@@ -1,0 +1,42 @@
+name: "Publish"
+
+permissions:
+  contents: "write"
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+concurrency:
+  group: "publish-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  main:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out"
+        uses: "actions/checkout@v6" # https://github.com/actions/checkout/releases
+      - name: "GCP auth"
+        uses: "google-github-actions/auth@v3" # https://github.com/google-github-actions/auth/releases
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: "Set up Java"
+        uses: "actions/setup-java@v5" # https://github.com/actions/setup-java/releases
+        with:
+          java-version: "21"
+          distribution: "corretto"
+          cache: "gradle"
+      - name: "Compute version"
+        id: "version"
+        run: |
+          echo "version=$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - name: "Gradle publish"
+        run: |
+          ./gradlew publish -Pversion="${{ steps.version.outputs.version }}"
+      - name: "Tag"
+        run: |
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
