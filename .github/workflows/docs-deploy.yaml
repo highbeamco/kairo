@@ -1,4 +1,4 @@
-name: "Docs CI"
+name: "Docs deploy"
 
 permissions:
   contents: "read"
