@@ -32,7 +32,7 @@ jobs:
       - name: "Compute version"
         id: "version"
         run: |
-          echo "version=$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "version=$(date -u '+%Y%m%d.%H%M%S')-$(git rev-parse --short=8 HEAD)" >> "$GITHUB_OUTPUT"
       - name: "Gradle publish"
         run: |
           ./gradlew publish -Pversion="${{ steps.version.outputs.version }}"
