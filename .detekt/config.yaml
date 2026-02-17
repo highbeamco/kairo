@@ -830,7 +830,7 @@ style:
   UnnecessaryFilter:
     active: true
   UnnecessaryFullyQualifiedName:
-    active: true
+    active: false
   UnnecessaryInheritance:
     active: true
   UnnecessaryInnerClass:

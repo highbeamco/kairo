@@ -13,7 +13,6 @@ internal class KotlinDurationDeserializer : StdDeserializer<Duration>(
     p: JsonParser,
     ctxt: DeserializationContext,
   ): Duration {
-    @Suppress("UnnecessaryFullyQualifiedName")
     val javaDuration = ctxt.readValue(p, java.time.Duration::class.java)
     return javaDuration.toKotlinDuration()
   }
