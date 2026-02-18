@@ -44,8 +44,8 @@ Now send an email!
 val mailer: Mailer // Inject this.
 
 val email = Email().apply {
-  setFrom("Kairo Sample", "kairo-sample@airborne.software")
-  addRecipient("Jeff Hudson", "jeff@example.com")
+  setFrom("Jeff Hudson", "jeff@highbeam.com")
+  addRecipient("Gautam Gupta", "gautam@highbeam.com")
   setTemplateId(mailer.templates.getValue("library-book-created"))
   setSubject("New library book: ${libraryBook.title}")
   addPersonalization("library_book_title", libraryBook.title)

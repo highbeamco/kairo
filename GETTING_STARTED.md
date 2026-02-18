@@ -2,7 +2,7 @@
 
 This guide walks you through using Kairo in your project.
 
-**[Documentation](https://kairo.airborne.software)** · **[API Reference](https://kairo.airborne.software/api/)**
+**[Documentation](https://kairo.highbeam.com)** · **[API Reference](https://kairo.highbeam.com/api/)**
 
 ## Prerequisites
 
@@ -277,4 +277,4 @@ See [kairo-integration-testing](./kairo-integration-testing/README.md) for detai
 
 - Read the [Architecture overview](./ARCHITECTURE.md) to understand how the pieces fit together.
 - Browse individual library READMEs for detailed usage — they are linked from the [root README](./README.md).
-- Check the [API Reference](https://kairo.airborne.software/api/) for complete API documentation.
+- Check the [API Reference](https://kairo.highbeam.com/api/) for complete API documentation.

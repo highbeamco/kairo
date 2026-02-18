@@ -96,7 +96,7 @@ val UserId.Companion.zero: UserId
 val UserModel.Creator.Companion.jeff: UserModel.Creator
   get() =
     UserModel.Creator(
-      emailAddress = "jeff@example.com",
+      emailAddress = "jeff@highbeam.com",
     )
 
 val UserModel.Companion.jeff: UserModel
@@ -104,7 +104,7 @@ val UserModel.Companion.jeff: UserModel
     UserModel(
       id = UserId.zero,
       createdAt = Instant.epoch,
-      emailAddress = "jeff@example.com",
+      emailAddress = "jeff@highbeam.com",
     )
 
 @ExtendWith(UserFeatureTest::class)
@@ -158,7 +158,7 @@ fun UserModel.sanitized(): UserModel =
 val UserModel.Creator.Companion.jeff: UserModel.Creator
   get() =
     UserModel.Creator(
-      emailAddress = "jeff@example.com",
+      emailAddress = "jeff@highbeam.com",
     )
 
 val UserModel.Companion.jeff: UserModel
@@ -166,21 +166,21 @@ val UserModel.Companion.jeff: UserModel
     UserModel(
       id = UserId.zero,
       createdAt = Instant.epoch,
-      emailAddress = "jeff@example.com",
+      emailAddress = "jeff@highbeam.com",
     )
 
-val UserModel.Creator.Companion.noah: UserModel.Creator
+val UserModel.Creator.Companion.gautam: UserModel.Creator
   get() =
     UserModel.Creator(
-      emailAddress = "noah@example.com",
+      emailAddress = "gautam@example.com",
     )
 
-val UserModel.Companion.noah: UserModel
+val UserModel.Companion.gautam: UserModel
   get() =
     UserModel(
       id = UserId.zero,
       createdAt = Instant.epoch,
-      emailAddress = "noah@example.com",
+      emailAddress = "gautam@example.com",
     )
 
 @ExtendWith(UserFeatureTest::class)
@@ -205,7 +205,7 @@ class CreateUserTest {
     runTest {
       setup {
         userService.create(
-          UserModel.Creator.noah.copy(
+          UserModel.Creator.gautam.copy(
             emailAddress = UserModel.jeff.emailAddress,
           ),
         )

@@ -60,7 +60,7 @@ HTTP 400 Bad Request
 Introduction of `kairo-validation` with common validation patterns.
 
 ```kotlin
-Validator.emailAddress.matches("jeff@example.com") // true
+Validator.emailAddress.matches("jeff@highbeam.com") // true
 Validator.emailAddress.matches("not-an-email") // false
 ```
 

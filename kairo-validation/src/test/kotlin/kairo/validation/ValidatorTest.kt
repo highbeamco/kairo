@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 internal class ValidatorTest {
   @Test
   fun `email address`() {
-    Validator.emailAddress.matches("jeff@example.com").shouldBeTrue()
-    Validator.emailAddress.matches("kairo-sample@airborne.software").shouldBeTrue()
+    Validator.emailAddress.matches("jeff@highbeam.com").shouldBeTrue()
+    Validator.emailAddress.matches("jeff-hudson@highbeam.com").shouldBeTrue()
     Validator.emailAddress.matches("user@domain.co.uk").shouldBeTrue()
     Validator.emailAddress.matches("test.name+tag@sub.domain.org").shouldBeTrue()
     Validator.emailAddress.matches("a@b.co").shouldBeTrue()
