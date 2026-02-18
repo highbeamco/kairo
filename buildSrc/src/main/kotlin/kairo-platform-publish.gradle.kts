@@ -6,7 +6,7 @@ plugins {
 publishing {
   publications {
     repositories {
-      artifactRegistry()
+      highbeamKairo()
     }
     create<MavenPublication>("bom") {
       groupId = groupId()

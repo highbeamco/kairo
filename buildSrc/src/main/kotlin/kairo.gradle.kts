@@ -5,5 +5,4 @@ plugins {
 repositories {
   mavenLocal()
   mavenCentral()
-  artifactRegistry()
 }
