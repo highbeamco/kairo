@@ -32,7 +32,7 @@ class WeatherFeature : ClientFeature(httpClientName = "weather") {
   override fun HttpClientConfig<*>.configure() {
     defaultRequest {
       url("https://api.weather.gov")
-      userAgent("kairo (jeff@example.com)")
+      userAgent("kairo (jeff@highbeam.com)")
     }
   }
 }

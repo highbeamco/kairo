@@ -11,7 +11,7 @@ Designed to work seamlessly together but flexible enough to slot into any projec
 Kairo's libraries let you move faster, write cleaner code,
 and focus on the parts of your app that actually matter.
 
-**[Documentation](https://kairo.airborne.software)** · **[API Reference](https://kairo.airborne.software/api/)** · **[Getting Started](./GETTING_STARTED.md)** · **[Architecture](./ARCHITECTURE.md)**
+**[Documentation](https://kairo.highbeam.com)** · **[API Reference](https://kairo.highbeam.com/api/)** · **[Getting Started](./GETTING_STARTED.md)** · **[Architecture](./ARCHITECTURE.md)**
 
 ## Getting started
 
