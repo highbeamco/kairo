@@ -10,7 +10,7 @@ java {
 publishing {
   publications {
     repositories {
-      artifactRegistry()
+      highbeamKairo()
     }
     create<MavenPublication>("maven") {
       groupId = groupId()
