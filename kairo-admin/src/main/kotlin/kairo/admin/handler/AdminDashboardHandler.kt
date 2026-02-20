@@ -147,25 +147,21 @@ internal class AdminDashboardHandler(
 
   private fun Route.loginRoutes() {
     get("/login") {
-      call.respondHtml {
-        loginView(config)
+      if (config.oauth != null) {
+        // If OAuth is configured, redirect directly to the provider.
+        call.respondRedirect("${config.pathPrefix}/login/oauth")
+      } else {
+        call.respondHtml {
+          loginView(config)
+        }
       }
     }
 
-    // Manual token login (fallback when OAuth is not configured).
-    post("/login") {
-      val params = call.receiveParameters()
-      val token = params["token"].orEmpty().trim()
-      if (token.isNotEmpty()) {
-        setSessionCookie(token)
-      }
-      call.respondRedirect(config.pathPrefix + "/")
-    }
-
-    // OAuth: redirect to the authorization server.
     if (config.oauth != null) {
+      val oauth = config.oauth!!
+
+      // OAuth: redirect to the authorization server.
       get("/login/oauth") {
-        val oauth = config.oauth!!
         val state = generateState()
         call.response.cookies.append(
           Cookie(
@@ -194,7 +190,6 @@ internal class AdminDashboardHandler(
 
       // OAuth: handle the callback from the authorization server.
       get("/callback") {
-        val oauth = config.oauth!!
         val code = call.request.queryParameters["code"]
         val returnedState = call.request.queryParameters["state"]
         val error = call.request.queryParameters["error"]
