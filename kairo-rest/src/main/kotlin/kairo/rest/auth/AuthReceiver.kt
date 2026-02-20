@@ -12,6 +12,7 @@ import io.ktor.server.auth.BearerTokenCredential
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
 import io.ktor.server.routing.RoutingCall
+import io.ktor.util.AttributeKey
 import java.net.URI
 import java.security.interfaces.RSAPublicKey
 import kairo.rest.RestEndpoint
@@ -54,6 +55,12 @@ public class AuthReceiver<E : RestEndpoint<*, *>> internal constructor(
   }
 
   public companion object {
+    /**
+     * Attribute key for overriding the bearer token on a call.
+     * Used by the admin dashboard to supply a JWT from a cookie.
+     */
+    public val BearerTokenOverride: AttributeKey<String> = AttributeKey("BearerTokenOverride")
+
     private val sentinel: RestEndpoint<Unit, Unit> = object : RestEndpoint<Unit, Unit>() {}
 
     /**
@@ -74,7 +81,9 @@ public fun AuthReceiver<*>.public(): Unit =
   Unit
 
 public fun AuthReceiver<*>.verify(config: VerifierConfig): JWTPrincipal {
-  val credential = call.principal<BearerTokenCredential>() ?: throw NoJwt()
+  val credential = call.principal<BearerTokenCredential>()
+    ?: call.attributes.getOrNull(BearerTokenOverride)?.let { BearerTokenCredential(it) }
+    ?: throw NoJwt()
   val verifier = createVerifier(config, credential)
   val payload = try {
     verifier.verify(credential.token)

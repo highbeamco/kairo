@@ -1,5 +1,6 @@
 package kairo.admin.handler
 
+import io.ktor.http.Cookie
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.html.respondHtml
@@ -41,6 +42,7 @@ import kairo.admin.view.homeView
 import kairo.admin.view.integrationsView
 import kairo.admin.view.jvmStatsPartial
 import kairo.admin.view.jvmView
+import kairo.admin.view.loginView
 import kairo.admin.view.loggingView
 import kairo.admin.view.slackView
 import kairo.rest.HasRouting
@@ -77,6 +79,7 @@ internal class AdminDashboardHandler(
       staticResources("${config.pathPrefix}/static", "static/admin")
 
       route(config.pathPrefix) {
+        loginRoutes()
         homeRoute()
         endpointRoutes()
         configRoutes()
@@ -97,15 +100,78 @@ internal class AdminDashboardHandler(
 
   private fun Route.authGet(path: String = "", body: suspend RoutingContext.() -> Unit): Route =
     get(path) {
-      auth?.invoke(AuthReceiver.forCall(call))
+      if (auth != null) {
+        applyBearerTokenOverride()
+        try {
+          auth.invoke(AuthReceiver.forCall(call))
+        } catch (_: Exception) {
+          call.respondRedirect("${config.pathPrefix}/login")
+          return@get
+        }
+      }
       body()
     }
 
   private fun Route.authPost(path: String = "", body: suspend RoutingContext.() -> Unit): Route =
     post(path) {
-      auth?.invoke(AuthReceiver.forCall(call))
+      if (auth != null) {
+        applyBearerTokenOverride()
+        try {
+          auth.invoke(AuthReceiver.forCall(call))
+        } catch (_: Exception) {
+          call.respondRedirect("${config.pathPrefix}/login")
+          return@post
+        }
+      }
       body()
     }
+
+  /**
+   * Copies the bearer token from the admin session cookie onto the call attributes
+   * so that [AuthReceiver.verify] can find it.
+   */
+  private fun RoutingContext.applyBearerTokenOverride() {
+    val token = call.request.cookies[COOKIE_NAME] ?: return
+    call.attributes.put(AuthReceiver.BearerTokenOverride, token)
+  }
+
+  private fun Route.loginRoutes() {
+    get("/login") {
+      call.respondHtml {
+        loginView(config)
+      }
+    }
+
+    post("/login") {
+      val params = call.receiveParameters()
+      val token = params["token"].orEmpty().trim()
+      if (token.isNotEmpty()) {
+        call.response.cookies.append(
+          Cookie(
+            name = COOKIE_NAME,
+            value = token,
+            path = config.pathPrefix,
+            httpOnly = true,
+            secure = call.request.local.scheme == "https",
+          ),
+        )
+      }
+      call.respondRedirect(config.pathPrefix + "/")
+    }
+
+    post("/logout") {
+      call.response.cookies.append(
+        Cookie(
+          name = COOKIE_NAME,
+          value = "",
+          path = config.pathPrefix,
+          httpOnly = true,
+          maxAge = 0,
+        ),
+      )
+      call.respondRedirect("${config.pathPrefix}/login")
+    }
+  }
 
   @Suppress("SuspendFunSwallowedCancellation")
   private fun Route.homeRoute() {
@@ -460,5 +526,9 @@ internal class AdminDashboardHandler(
         }
       }
     }
+  }
+
+  private companion object {
+    const val COOKIE_NAME: String = "kairo_admin_token"
   }
 }
