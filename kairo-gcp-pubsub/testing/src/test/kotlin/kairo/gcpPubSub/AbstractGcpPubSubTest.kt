@@ -1,11 +1,17 @@
 package kairo.gcpPubSub
 
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.Test
 
@@ -113,7 +119,7 @@ internal abstract class AbstractGcpPubSubTest {
         received.complete(message)
       }
       gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "hello"))
-      val message = withTimeout(1_000) { received.await() }
+      val message = withContext(Dispatchers.Default) { withTimeout(1_000) { received.await() } }
       message.data.shouldBe("hello")
     }
 
@@ -126,7 +132,7 @@ internal abstract class AbstractGcpPubSubTest {
       }
       val attributes = mapOf("key" to "value")
       gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "hello", attributes = attributes))
-      val message = withTimeout(1_000) { received.await() }
+      val message = withContext(Dispatchers.Default) { withTimeout(1_000) { received.await() } }
       message.attributes.shouldBe(attributes)
     }
 
@@ -136,13 +142,54 @@ internal abstract class AbstractGcpPubSubTest {
       val received = mutableListOf<GcpPubSubMessage>()
       val allReceived = CompletableDeferred<Unit>()
       subscribeToTestTopic { message ->
-        received.add(message)
+        synchronized(received) { received.add(message) }
         if (received.size == 2) allReceived.complete(Unit)
       }
       gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "first"))
       gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "second"))
-      withTimeout(1_000) { allReceived.await() }
+      withContext(Dispatchers.Default) { withTimeout(1_000) { allReceived.await() } }
       received.shouldHaveSize(2)
+    }
+
+  @Test
+  fun `concurrent publishes are all recorded`(): Unit =
+    runTest {
+      val messageIds = (1..10).map { i ->
+        async { gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "msg-$i")) }
+      }.awaitAll()
+      messageIds.distinct().shouldHaveSize(10)
+      getPublishedMessages().shouldHaveSize(10)
+      getPublishedMessages().map { it.second.data }
+        .shouldContainExactlyInAnyOrder((1..10).map { "msg-$it" })
+    }
+
+  @Test
+  fun `handler that suspends completes correctly`(): Unit =
+    runTest {
+      val received = CompletableDeferred<GcpPubSubMessage>()
+      subscribeToTestTopic { message ->
+        delay(50)
+        received.complete(message)
+      }
+      gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "delayed"))
+      val message = withContext(Dispatchers.Default) { withTimeout(2_000) { received.await() } }
+      message.data.shouldBe("delayed")
+    }
+
+  @Test
+  fun `multiple subscribers all receive the same message`(): Unit =
+    runTest {
+      val received1 = CompletableDeferred<GcpPubSubMessage>()
+      val received2 = CompletableDeferred<GcpPubSubMessage>()
+      subscribeToTestTopic { message -> received1.complete(message) }
+      subscribeToTestTopic { message -> received2.complete(message) }
+      gcpPubSub.publish(testTopic, GcpPubSubMessage(data = "broadcast"))
+      withContext(Dispatchers.Default) {
+        val msg1 = withTimeout(1_000) { received1.await() }
+        val msg2 = withTimeout(1_000) { received2.await() }
+        msg1.data.shouldBe("broadcast")
+        msg2.data.shouldBe("broadcast")
+      }
     }
 
   @Test
