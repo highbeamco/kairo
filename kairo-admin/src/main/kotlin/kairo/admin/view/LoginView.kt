@@ -1,7 +1,10 @@
 package kairo.admin.view
 
 import kairo.admin.AdminDashboardConfig
+import kotlinx.html.ButtonType
+import kotlinx.html.FormMethod
 import kotlinx.html.HTML
+import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.button
 import kotlinx.html.classes
@@ -40,37 +43,64 @@ internal fun HTML.loginView(config: AdminDashboardConfig) {
           classes = setOf("text-xl", "font-semibold", "text-gray-900")
           +"${config.serverName ?: config.title} Admin"
         }
-        p {
-          classes = setOf("text-sm", "text-gray-500", "mt-1")
-          +"Paste a valid bearer token to continue."
-        }
-      }
-      form {
-        method = kotlinx.html.FormMethod.post
-        action = "${config.pathPrefix}/login"
-        div {
-          classes = setOf("mb-4")
-          textArea {
-            name = "token"
-            rows = "4"
-            classes = setOf(
-              "w-full", "rounded-md", "border", "border-gray-300", "px-3", "py-2",
-              "text-sm", "font-mono", "focus:outline-none", "focus:ring-2", "focus:ring-indigo-500",
-              "placeholder-gray-400",
-            )
-            placeholder = "eyJhbGciOiJSUzI1NiIs..."
+        if (config.oauth != null) {
+          p {
+            classes = setOf("text-sm", "text-gray-500", "mt-1")
+            +"Sign in to continue."
+          }
+        } else {
+          p {
+            classes = setOf("text-sm", "text-gray-500", "mt-1")
+            +"Paste a valid bearer token to continue."
           }
         }
-        button {
-          type = kotlinx.html.ButtonType.submit
-          classes = setOf(
-            "w-full", "rounded-md", "bg-indigo-600", "px-4", "py-2",
-            "text-sm", "font-medium", "text-white",
-            "hover:bg-indigo-700", "focus:outline-none", "focus:ring-2", "focus:ring-indigo-500",
-          )
-          +"Sign in"
-        }
       }
+      if (config.oauth != null) {
+        oauthLoginForm(config)
+      } else {
+        tokenLoginForm(config)
+      }
+    }
+  }
+}
+
+private fun kotlinx.html.DIV.oauthLoginForm(config: AdminDashboardConfig) {
+  a {
+    href = "${config.pathPrefix}/login/oauth"
+    classes = setOf(
+      "w-full", "block", "text-center", "rounded-md", "bg-indigo-600", "px-4", "py-2",
+      "text-sm", "font-medium", "text-white",
+      "hover:bg-indigo-700", "focus:outline-none", "focus:ring-2", "focus:ring-indigo-500",
+    )
+    +"Sign in with ${config.oauth!!.providerName}"
+  }
+}
+
+private fun kotlinx.html.DIV.tokenLoginForm(config: AdminDashboardConfig) {
+  form {
+    method = FormMethod.post
+    action = "${config.pathPrefix}/login"
+    div {
+      classes = setOf("mb-4")
+      textArea {
+        name = "token"
+        rows = "4"
+        classes = setOf(
+          "w-full", "rounded-md", "border", "border-gray-300", "px-3", "py-2",
+          "text-sm", "font-mono", "focus:outline-none", "focus:ring-2", "focus:ring-indigo-500",
+          "placeholder-gray-400",
+        )
+        placeholder = "eyJhbGciOiJSUzI1NiIs..."
+      }
+    }
+    button {
+      type = ButtonType.submit
+      classes = setOf(
+        "w-full", "rounded-md", "bg-indigo-600", "px-4", "py-2",
+        "text-sm", "font-medium", "text-white",
+        "hover:bg-indigo-700", "focus:outline-none", "focus:ring-2", "focus:ring-indigo-500",
+      )
+      +"Sign in"
     }
   }
 }
