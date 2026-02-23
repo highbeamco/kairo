@@ -1,19 +1,28 @@
 package kairo.admin.handler
 
+import io.ktor.http.Cookie
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.html.respondHtml
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respondRedirect
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import java.net.URI
+import java.net.URLEncoder
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.security.SecureRandom
 import java.util.Base64
 import kairo.admin.AdminDashboardConfig
+import kairo.admin.AdminOAuthConfig
 import kairo.admin.collector.ConfigCollector
 import kairo.admin.collector.DatabaseCollector
 import kairo.admin.collector.DependencyCollector
@@ -41,6 +50,7 @@ import kairo.admin.view.homeView
 import kairo.admin.view.integrationsView
 import kairo.admin.view.jvmStatsPartial
 import kairo.admin.view.jvmView
+import kairo.admin.view.loginView
 import kairo.admin.view.loggingView
 import kairo.admin.view.slackView
 import kairo.rest.HasRouting
@@ -71,12 +81,15 @@ internal class AdminDashboardHandler(
     if (emailTemplates != null) add("email")
   }
 
+  private val httpClient: HttpClient = HttpClient.newHttpClient()
+
   @Suppress("CognitiveComplexMethod", "SuspendFunSwallowedCancellation")
   override fun Application.routing() {
     routing {
       staticResources("${config.pathPrefix}/static", "static/admin")
 
       route(config.pathPrefix) {
+        loginRoutes()
         homeRoute()
         endpointRoutes()
         configRoutes()
@@ -97,15 +110,203 @@ internal class AdminDashboardHandler(
 
   private fun Route.authGet(path: String = "", body: suspend RoutingContext.() -> Unit): Route =
     get(path) {
-      auth?.invoke(AuthReceiver.forCall(call))
+      if (auth != null) {
+        applyBearerTokenOverride()
+        try {
+          auth.invoke(AuthReceiver.forCall(call))
+        } catch (_: Exception) {
+          call.respondRedirect("${config.pathPrefix}/login")
+          return@get
+        }
+      }
       body()
     }
 
   private fun Route.authPost(path: String = "", body: suspend RoutingContext.() -> Unit): Route =
     post(path) {
-      auth?.invoke(AuthReceiver.forCall(call))
+      if (auth != null) {
+        applyBearerTokenOverride()
+        try {
+          auth.invoke(AuthReceiver.forCall(call))
+        } catch (_: Exception) {
+          call.respondRedirect("${config.pathPrefix}/login")
+          return@post
+        }
+      }
       body()
     }
+
+  /**
+   * Copies the bearer token from the admin session cookie onto the call attributes
+   * so that [AuthReceiver.verify] can find it.
+   */
+  private fun RoutingContext.applyBearerTokenOverride() {
+    val token = call.request.cookies[COOKIE_NAME] ?: return
+    call.attributes.put(AuthReceiver.BearerTokenOverride, token)
+  }
+
+  private fun Route.loginRoutes() {
+    if (config.oauth != null) {
+      val oauth = config.oauth!!
+
+      // GET /login initiates the OAuth Authorization Code flow directly.
+      get("/login") {
+        val state = generateState()
+        call.response.cookies.append(
+          Cookie(
+            name = STATE_COOKIE_NAME,
+            value = state,
+            path = config.pathPrefix,
+            httpOnly = true,
+            secure = call.request.local.scheme == "https",
+            maxAge = STATE_MAX_AGE_SECONDS,
+          ),
+        )
+        val redirectUri = buildCallbackUrl()
+        val params = buildMap {
+          put("response_type", "code")
+          put("client_id", oauth.clientId)
+          put("redirect_uri", redirectUri)
+          put("scope", oauth.scopes.joinToString(" "))
+          put("state", state)
+          if (oauth.audience != null) put("audience", oauth.audience)
+        }
+        val query = params.entries.joinToString("&") { (k, v) ->
+          "${URLEncoder.encode(k, Charsets.UTF_8)}=${URLEncoder.encode(v, Charsets.UTF_8)}"
+        }
+        call.respondRedirect("${oauth.authorizeUrl}?$query")
+      }
+
+      // Handle the callback from the authorization server.
+      get("/callback") {
+        val code = call.request.queryParameters["code"]
+        val returnedState = call.request.queryParameters["state"]
+        val error = call.request.queryParameters["error"]
+
+        if (error != null) {
+          call.respondText(
+            "OAuth error: $error - ${call.request.queryParameters["error_description"].orEmpty()}",
+            status = HttpStatusCode.BadRequest,
+          )
+          return@get
+        }
+
+        // Verify state to prevent CSRF.
+        val expectedState = call.request.cookies[STATE_COOKIE_NAME]
+        if (returnedState == null || returnedState != expectedState) {
+          call.respondText("Invalid OAuth state parameter.", status = HttpStatusCode.BadRequest)
+          return@get
+        }
+
+        // Clear the state cookie.
+        call.response.cookies.append(
+          Cookie(
+            name = STATE_COOKIE_NAME,
+            value = "",
+            path = config.pathPrefix,
+            httpOnly = true,
+            maxAge = 0,
+          ),
+        )
+
+        if (code == null) {
+          call.respondText("Missing authorization code.", status = HttpStatusCode.BadRequest)
+          return@get
+        }
+
+        val redirectUri = buildCallbackUrl()
+        val accessToken = exchangeCodeForToken(oauth, code, redirectUri)
+        if (accessToken == null) {
+          call.respondText("Failed to exchange authorization code.", status = HttpStatusCode.BadGateway)
+          return@get
+        }
+
+        setSessionCookie(accessToken)
+        call.respondRedirect("${config.pathPrefix}/")
+      }
+    } else {
+      // No OAuth configured — show a static error page.
+      get("/login") {
+        call.respondHtml {
+          loginView(config)
+        }
+      }
+    }
+
+    post("/logout") {
+      call.response.cookies.append(
+        Cookie(
+          name = COOKIE_NAME,
+          value = "",
+          path = config.pathPrefix,
+          httpOnly = true,
+          maxAge = 0,
+        ),
+      )
+      val logoutUrl = config.oauth?.logoutUrl
+      if (logoutUrl != null) {
+        call.respondRedirect(logoutUrl)
+      } else {
+        call.respondRedirect("${config.pathPrefix}/login")
+      }
+    }
+  }
+
+  private fun RoutingContext.setSessionCookie(token: String) {
+    call.response.cookies.append(
+      Cookie(
+        name = COOKIE_NAME,
+        value = token,
+        path = config.pathPrefix,
+        httpOnly = true,
+        secure = call.request.local.scheme == "https",
+      ),
+    )
+  }
+
+  private fun RoutingContext.buildCallbackUrl(): String {
+    val origin = call.request.origin
+    val port = origin.serverPort
+    val scheme = origin.scheme
+    val host = origin.serverHost
+    val portSuffix = when {
+      scheme == "https" && port == 443 -> ""
+      scheme == "http" && port == 80 -> ""
+      else -> ":$port"
+    }
+    return "$scheme://$host$portSuffix${config.pathPrefix}/callback"
+  }
+
+  /**
+   * Exchanges an OAuth authorization code for an access token using the token endpoint.
+   */
+  @Suppress("SwallowedException")
+  private fun exchangeCodeForToken(oauth: AdminOAuthConfig, code: String, redirectUri: String): String? {
+    val body = buildMap {
+      put("grant_type", "authorization_code")
+      put("client_id", oauth.clientId)
+      put("client_secret", oauth.clientSecret)
+      put("code", code)
+      put("redirect_uri", redirectUri)
+    }.entries.joinToString("&") { (k, v) ->
+      "${URLEncoder.encode(k, Charsets.UTF_8)}=${URLEncoder.encode(v, Charsets.UTF_8)}"
+    }
+
+    val request = HttpRequest.newBuilder()
+      .uri(URI.create(oauth.tokenUrl))
+      .header("Content-Type", "application/x-www-form-urlencoded")
+      .POST(HttpRequest.BodyPublishers.ofString(body))
+      .build()
+
+    return try {
+      val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+      if (response.statusCode() != 200) return null
+      // Parse access_token from the JSON response without adding a JSON library dependency.
+      parseAccessToken(response.body())
+    } catch (_: Exception) {
+      null
+    }
+  }
 
   @Suppress("SuspendFunSwallowedCancellation")
   private fun Route.homeRoute() {
@@ -459,6 +660,37 @@ internal class AdminDashboardHandler(
           emailView(emailTemplates!!)
         }
       }
+    }
+  }
+
+  private companion object {
+    const val COOKIE_NAME: String = "kairo_admin_token"
+    const val STATE_COOKIE_NAME: String = "kairo_admin_oauth_state"
+    const val STATE_MAX_AGE_SECONDS: Int = 600
+
+    private val secureRandom = SecureRandom()
+
+    fun generateState(): String {
+      val bytes = ByteArray(32)
+      secureRandom.nextBytes(bytes)
+      return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes)
+    }
+
+    /**
+     * Extracts the "access_token" value from a JSON response string
+     * without requiring a JSON parsing library.
+     */
+    fun parseAccessToken(json: String): String? {
+      val key = "\"access_token\""
+      val idx = json.indexOf(key)
+      if (idx < 0) return null
+      val colonIdx = json.indexOf(':', idx + key.length)
+      if (colonIdx < 0) return null
+      val startQuote = json.indexOf('"', colonIdx + 1)
+      if (startQuote < 0) return null
+      val endQuote = json.indexOf('"', startQuote + 1)
+      if (endQuote < 0) return null
+      return json.substring(startQuote + 1, endQuote)
     }
   }
 }
