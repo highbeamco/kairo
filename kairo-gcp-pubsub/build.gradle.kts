@@ -8,5 +8,5 @@ dependencies {
 
   implementation(libs.coroutines)
   implementation(libs.coroutines.guava) // Some utils are used internally.
-  implementation(libs.gcp.pubsub)
+  api(libs.gcp.pubsub)
 }

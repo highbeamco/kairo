@@ -1,5 +1,7 @@
 package kairo.gcpPubSub
 
+import com.google.cloud.pubsub.v1.Publisher
+import com.google.cloud.pubsub.v1.Subscriber
 import kairo.dependencyInjection.HasKoinModules
 import kairo.feature.Feature
 import kairo.feature.LifecycleHandler
@@ -9,13 +11,19 @@ import org.koin.dsl.module
 
 public class GcpPubSubFeature(
   config: GcpPubSubFeatureConfig,
+  configurePublisher: Publisher.Builder.() -> Unit = {},
+  configureSubscriber: Subscriber.Builder.() -> Unit = {},
 ) : Feature(), HasKoinModules {
   override val name: String = "GCP Pub/Sub"
 
   private val gcpPubSub: GcpPubSub by lazy {
     when (config) {
       is GcpPubSubFeatureConfig.Real ->
-        DefaultGcpPubSub(projectId = config.projectId)
+        DefaultGcpPubSub(
+          config = config.defaultGcpPubSub,
+          configurePublisher = configurePublisher,
+          configureSubscriber = configureSubscriber,
+        )
       is GcpPubSubFeatureConfig.Local ->
         LocalGcpPubSub(topicToSubscriptions = config.topicToSubscriptions)
     }

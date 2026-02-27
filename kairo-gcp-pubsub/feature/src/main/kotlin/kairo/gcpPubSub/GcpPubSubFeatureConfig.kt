@@ -2,7 +2,7 @@ package kairo.gcpPubSub
 
 public sealed class GcpPubSubFeatureConfig {
   public data class Real(
-    val projectId: String,
+    val defaultGcpPubSub: DefaultGcpPubSubConfig,
   ) : GcpPubSubFeatureConfig()
 
   public data class Local(
