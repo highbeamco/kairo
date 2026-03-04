@@ -30,32 +30,28 @@ jobs:
         uses: "google-github-actions/auth@v3" # https://github.com/google-github-actions/auth/releases
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-      - name: "Set up Java"
-        uses: "actions/setup-java@v5" # https://github.com/actions/setup-java/releases
+      - name: "Set up Hermit"
+        uses: "cashapp/activate-hermit@v1" # https://github.com/cashapp/activate-hermit
         with:
-          java-version: "21"
-          distribution: "corretto"
-          cache: "gradle"
+          cache: "true"
+      - name: "Set up Gradle"
+        uses: "gradle/actions/setup-gradle@v5" # https://github.com/gradle/actions
       - name: "Generate Dokka API docs"
         run: |
-          ./gradlew dokkaGenerate
-      - name: "Set up pnpm"
-        uses: "pnpm/action-setup@v4" # https://github.com/pnpm/action-setup/releases
+          gradle dokkaGenerate
+      - name: "Cache pnpm store"
+        uses: "actions/cache@v4" # https://github.com/actions/cache
         with:
-          version: "10"
-      - name: "Set up Node"
-        uses: "actions/setup-node@v6" # https://github.com/actions/setup-node
-        with:
-          node-version: "24"
-          cache: "pnpm"
-          cache-dependency-path: "docs/pnpm-lock.yaml"
+          path: "~/.local/share/pnpm/store/v10"
+          key: "pnpm-store-${{ hashFiles('docs/pnpm-lock.yaml') }}"
+          restore-keys: "pnpm-store-"
       - name: "Install dependencies"
         run: |
           pnpm install
         working-directory: "./docs"
       - name: "Build docs"
         run: |
-          npm run build
+          pnpm run build
         working-directory: "./docs"
       - name: "Upload artifact"
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
