@@ -182,6 +182,26 @@ These libraries help when **building your full application with Kairo**.
   Interface for [Stytch](https://stytch.com/),
   letting you easily manage identity.
 
+## Contributing
+
+### Prerequisites
+
+This project uses [Hermit](https://cashapp.github.io/hermit/) to manage toolchain dependencies.
+Activate the Hermit environment to get pinned versions of JDK 21, Gradle, Node.js, pnpm, and Terraform.
+
+```bash
+. ./bin/activate-hermit
+```
+
+### Build and test
+
+```bash
+gradle build              # Full build + tests + linting.
+gradle compileKotlin      # Compile only (fast check).
+gradle test               # Run all tests.
+gradle detektMain detektTest  # Run static analysis.
+```
+
 ## Style guide
 
 Other than the rules defined here, please follow the
