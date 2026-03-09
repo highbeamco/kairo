@@ -49,6 +49,11 @@ dependencies {
   // https://github.com/InsertKoinIO/koin-annotations/releases
   api(platform("io.insert-koin:koin-annotations-bom:2.3.1"))
 
+  // junit
+  // https://github.com/junit-team/junit5/releases
+  val junitVersion = "5.14.3"
+  api(platform("org.junit:junit-bom:$junitVersion"))
+
   // kotest
   // https://github.com/kotest/kotest/releases
   val kotestVersion = "6.1.5"
