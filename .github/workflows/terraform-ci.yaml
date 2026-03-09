@@ -27,8 +27,10 @@ jobs:
         uses: "google-github-actions/auth@v3" # https://github.com/google-github-actions/auth/releases
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-      - name: "Set up Terraform"
-        uses: "hashicorp/setup-terraform@v3" # https://github.com/hashicorp/setup-terraform
+      - name: "Set up Hermit"
+        uses: "cashapp/activate-hermit@v1" # https://github.com/cashapp/activate-hermit
+        with:
+          cache: "true"
       - name: "Terraform init"
         run: |
           terraform init

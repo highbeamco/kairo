@@ -26,18 +26,18 @@ jobs:
         uses: "google-github-actions/auth@v3" # https://github.com/google-github-actions/auth/releases
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-      - name: "Set up Java"
-        uses: "actions/setup-java@v5" # https://github.com/actions/setup-java/releases
+      - name: "Set up Hermit"
+        uses: "cashapp/activate-hermit@v1" # https://github.com/cashapp/activate-hermit
         with:
-          java-version: "21"
-          distribution: "corretto"
-          cache: "gradle"
+          cache: "true"
+      - name: "Set up Gradle"
+        uses: "gradle/actions/setup-gradle@v5" # https://github.com/gradle/actions
       - name: "Gradle classes"
         run: |
-          ./gradlew classes testClasses
+          gradle classes testClasses
       - name: "Gradle test"
         run: |
-          ./gradlew test
+          gradle test
       - name: "Gradle detekt"
         run: |
-          ./gradlew detektMain detektTest
+          gradle detektMain detektTest

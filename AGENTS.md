@@ -15,7 +15,8 @@ organized under a single Gradle build.
 ./gradlew assemble           # Build all artifacts without running tests.
 ```
 
-JDK 21 (Corretto) is required. Gradle wrapper handles the rest.
+Run `. ./bin/activate-hermit` to activate the Hermit environment,
+which provides JDK 21 (Corretto), Gradle, Node.js, pnpm, and Terraform at pinned versions.
 
 ## Project structure
 
