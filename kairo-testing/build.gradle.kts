@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
   api(libs.coroutines.test)
+  api(libs.junit.jupiter)
   api(libs.kotest)
   api(libs.mockk)
 }
