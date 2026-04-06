@@ -8,7 +8,7 @@ dependencies {
 
   // arrow
   // https://github.com/arrow-kt/arrow/releases
-  api(platform("io.arrow-kt:arrow-stack:2.2.2"))
+  api(platform("io.arrow-kt:arrow-stack:2.2.1.1"))
 
   // coroutines
   // https://github.com/Kotlin/kotlinx.coroutines/releases
@@ -16,7 +16,7 @@ dependencies {
 
   // exposed
   // https://github.com/JetBrains/Exposed/releases
-  api(platform("org.jetbrains.exposed:exposed-bom:1.1.1"))
+  api(platform("org.jetbrains.exposed:exposed-bom:1.1.0"))
 
   // gcp
   // https://github.com/googleapis/java-cloud-bom/releases
@@ -38,7 +38,7 @@ dependencies {
 
   // hocon
   // https://github.com/lightbend/config/releases
-  val hoconVersion = "1.4.6"
+  val hoconVersion = "1.4.5"
   constraints.api("com.typesafe:config:$hoconVersion")
 
   // koin
@@ -49,14 +49,9 @@ dependencies {
   // https://github.com/InsertKoinIO/koin-annotations/releases
   api(platform("io.insert-koin:koin-annotations-bom:2.3.1"))
 
-  // junit
-  // https://github.com/junit-team/junit5/releases
-  val junitVersion = "5.14.3"
-  api(platform("org.junit:junit-bom:$junitVersion"))
-
   // kotest
   // https://github.com/kotest/kotest/releases
-  val kotestVersion = "6.1.5"
+  val kotestVersion = "6.0.7"
   constraints.api("io.kotest:kotest-runner-junit5:$kotestVersion")
 
   // kotlinx-datetime
@@ -66,7 +61,7 @@ dependencies {
 
   // ktor
   // https://github.com/ktorio/ktor/releases
-  api(platform("io.ktor:ktor-bom:3.4.1"))
+  api(platform("io.ktor:ktor-bom:3.3.3"))
 
   // log4j
   // https://github.com/apache/logging-log4j2/releases
@@ -84,7 +79,7 @@ dependencies {
 
   // mockk
   // https://github.com/mockk/mockk/releases
-  val mockkVersion = "1.14.9"
+  val mockkVersion = "1.14.6"
   constraints.api("io.mockk:mockk:$mockkVersion")
 
   // moneta
@@ -94,7 +89,7 @@ dependencies {
 
   // postgres-jdbc
   // https://github.com/pgjdbc/pgjdbc/releases
-  val postgresJdbcVersion = "42.7.10"
+  val postgresJdbcVersion = "42.7.9"
   constraints.api("org.postgresql:postgresql:$postgresJdbcVersion")
 
   // postgres-r2dbc
