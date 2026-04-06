@@ -30,8 +30,6 @@ jackson-moduleKotlin = { module = "com.fasterxml.jackson.module:jackson-module-k
 koin = { module = "io.insert-koin:koin-core" }
 koin-annotations = { module = "io.insert-koin:koin-annotations" }
 
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
-
 kotest = { module = "io.kotest:kotest-runner-junit5" }
 
 ktorClient = { module = "io.ktor:ktor-client-core" }
